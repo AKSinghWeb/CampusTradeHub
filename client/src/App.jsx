@@ -1,31 +1,17 @@
 import './App.css'
-import LoginForm from './components/LoginForm'
-import RegistrationForm from './components/RegistrationForm'
-import axios from 'axios'
+import AOS from 'aos'
+import 'aos/dist/aos.css'
+import { useAuth } from './context/UserAuthContext'
+import AdminLayout from './components/Layout/AdminLayout'
+import UserLayout from './components/Layout/UserLayout'
+
+AOS.init()
+
 
 function App() {
-  const getUsers = async () => {
-    const token = localStorage.getItem('jwtToken')
-    const response = await axios.get('http://localhost:3000/api/users', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-
-    console.log(response.data)
-  }
-
+  const { state } = useAuth()
   return (
-    <>
-      <LoginForm />
-      <RegistrationForm />
-      <button
-        className="w-300 bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
-        onClick={getUsers}
-      >
-        Get Users
-      </button>
-    </>
+    <div>{state.user.role === 'admin' ? <AdminLayout /> : <UserLayout />}</div>
   )
 }
 
