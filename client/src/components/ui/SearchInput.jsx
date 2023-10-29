@@ -1,11 +1,37 @@
 import * as React from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from './button'
+import { useNavigate } from 'react-router-dom'
+import useCustomToasts from '@/hooks/useCustomToasts'
 
-const SearchInput = React.forwardRef(
-  ({ className, type, onClick, ...props }, ref) => {
-    return (
-      <div className="relative flex gap-3">
+const SearchInput = React.forwardRef(({ className, type, ...props }, ref) => {
+  const [searchValue, setSearchValue] = React.useState('')
+
+  const navigate = useNavigate()
+  const showWarningToast = useCustomToasts().showWarningToast
+
+  const handleInputChange = (event) => {
+    setSearchValue(event.target.value)
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (searchValue === '') {
+      showWarningToast('Warning', 'Please enter a search term')
+      return
+    }
+
+    navigate(`/products/search/${searchValue}`)
+    const escKeyEvent = new KeyboardEvent('keydown', {
+      key: 'Escape',
+      keyCode: 27,
+    })
+    document.dispatchEvent(escKeyEvent)
+  }
+
+  return (
+    <div>
+      <form className="relative flex gap-3" onSubmit={handleSubmit}>
         <input
           type={type}
           className={cn(
@@ -14,15 +40,17 @@ const SearchInput = React.forwardRef(
           )}
           placeholder="items, brands, categories..."
           ref={ref}
+          value={searchValue}
+          onChange={handleInputChange}
           {...props}
         />
         <div>
-          <Button onClick={onClick}>search</Button>
+          <Button type="submit">search</Button>
         </div>
-      </div>
-    )
-  }
-)
+      </form>
+    </div>
+  )
+})
 
 SearchInput.displayName = 'SearchInput'
 

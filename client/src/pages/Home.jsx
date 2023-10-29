@@ -1,10 +1,10 @@
 // import { useEffect } from 'react'
-import CategoryCarousel from '../components/Home/CategoryCarousel'
-import HeroSection from '../components/Home/HeroSection'
+import CategoryCarousel from '../components/UserHome/CategoryCarousel'
+import HeroSection from '../components/UserHome/HeroSection'
 
 // import sports from '../assets/sports.jpg'
-import ProductCardsContainer from '../components/Home/ProductCardContainerHome'
-import ServicesSection from '../components/Home/ServicesSection'
+import ProductCardsContainer from '../components/UserHome/ProductCardContainerHome'
+import ServicesSection from '../components/UserHome/ServicesSection'
 import { Separator } from '../components/ui/separator'
 
 const Home = () => {

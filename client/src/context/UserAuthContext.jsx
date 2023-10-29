@@ -1,15 +1,14 @@
 // AuthContext.js
-import { createContext, useReducer, useContext } from 'react'
+import { userApiService } from '@/services/apiService'
+import { getAuthToken } from '@/utils/authFunctions'
+import { createContext, useReducer, useContext, useEffect } from 'react'
 
 const AuthContext = createContext()
 
 export const AuthProvider = ({ children }) => {
   const initialState = {
     isLoggedIn: false,
-    user: {
-      username: '',
-      role: 'admin',
-    },
+    user: null,
   }
 
   const reducer = (state, action) => {
@@ -24,10 +23,7 @@ export const AuthProvider = ({ children }) => {
         return {
           ...state,
           isLoggedIn: false,
-          user: {
-            username: '',
-            role: '',
-          },
+          user: null,
         }
       default:
         return state
@@ -35,6 +31,25 @@ export const AuthProvider = ({ children }) => {
   }
 
   const [state, dispatch] = useReducer(reducer, initialState)
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const storedToken = getAuthToken()
+
+        if (storedToken) {
+          const userProfile = await userApiService.getMyProfile(storedToken)
+
+          dispatch({ type: 'LOGIN', payload: { ...userProfile } })
+        }
+      } catch (error) {
+        // Handle error fetching user profile
+        console.error('Error fetching user profile:', error)
+      }
+    }
+
+    fetchUserProfile()
+  }, [])
 
   return (
     <AuthContext.Provider value={{ state, dispatch }}>

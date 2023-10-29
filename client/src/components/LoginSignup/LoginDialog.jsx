@@ -3,7 +3,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  //   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -19,7 +18,7 @@ export function LoginDialog() {
           Login/Signup
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-[450px]">
+      <DialogContent className=" max-md:top-[38%] max-w-[450px]">
         <DialogHeader>
           <DialogTitle>
             <div className="flex justify-center items-center">

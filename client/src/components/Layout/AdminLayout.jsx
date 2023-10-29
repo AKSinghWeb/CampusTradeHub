@@ -5,9 +5,9 @@ import { Routes, Route } from 'react-router-dom'
 import Footer from '../Layout/Footer'
 import ProductPage from '../../pages/ProductPage'
 import AdminHome from '../../pages/AdminHome'
-import AdminHeader from './AdminHeader'
-import { Button } from '../ui/button'
-import { useAuth } from '@/context/UserAuthContext'
+import AdminHeader from '../AdminHome/AdminHeader'
+import AdminProductsPage from '@/pages/AdminProductsPage'
+import NotFound from './NotFound'
 
 const DummyProduct = {
   title: 'Adorable Cat Plushie',
@@ -23,29 +23,19 @@ const DummyProduct = {
 }
 
 const AdminLayout = () => {
-  const { dispatch } = useAuth()
   return (
     <div>
       <AdminHeader />
       <Routes>
         <Route path="/" element={<AdminHome />} />
+        <Route path="/*" element={<NotFound />} />
+        <Route path="/products/:productId" element={<ProductPage />} />
+        <Route path="/products" element={<AdminProductsPage />} />
         <Route
-          path="/product"
-          element={<ProductPage product={DummyProduct} />}
-        />
-        <Route
-          path="/profile"
-          element={<ProductPage product={DummyProduct} />}
+          path="/users"
+          element={<ProductPage product={DummyProduct} action="approve" />}
         />
       </Routes>
-
-      <Button
-        onClick={() => {
-          dispatch({ type: 'LOGOUT' })
-        }}
-      >
-        Log out
-      </Button>
       <Footer />
     </div>
   )

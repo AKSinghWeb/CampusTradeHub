@@ -13,11 +13,7 @@ export function SearchBtnPopUp() {
         <ButtonAsInput />
       </PopoverTrigger>
       <PopoverContent className="w-96">
-        <SearchInput
-          onClick={() => {
-            console.log('clicked')
-          }}
-        />
+        <SearchInput />
       </PopoverContent>
     </Popover>
   )
