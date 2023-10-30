@@ -58,8 +58,8 @@ export const ImageUpload = ({ image, setImage, setOriginalFilename }) => {
               className="flex flex-col items-center justify-center w-full h-full   border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
             >
               <div className="flex flex-col items-center justify-center">
-                <Image className="w-12 h-12 mt-2 text-gray-600" />
-                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                <Image className="w-12 h-12 mt-2 text-gray-600 dark:text-gray-300" />
+                <p className="mb-2 text-sm text-gray-500 dark:text-gray-300">
                   <span className="font-semibold">Click to upload</span>
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">

@@ -45,7 +45,7 @@ const ProductList = ({ type }) => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber)
 
   return (
-    <div className="min-h-screen mt-32 lg:mt-40 bg-gray-100 dark:bg-gray-800 rounded-md p-8 md:p-12 lg:p-16 mx-4 md:mx-8 lg:mx-16 my-8 md:my-16 lg:my-20">
+    <div className="min-h-screen mt-10 lg:mt-14 bg-gray-100 dark:bg-gray-900 rounded-md p-8 md:p-12 lg:p-16 mx-4 md:mx-8 lg:mx-16 my-8 md:my-16 lg:my-20">
       <h1 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-gray-800 dark:text-gray-200 mb-8">
         {type === 'category'
           ? `Explore Products: ${category} `

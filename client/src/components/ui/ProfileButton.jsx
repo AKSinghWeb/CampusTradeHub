@@ -12,6 +12,7 @@ import { useAuth } from '@/context/UserAuthContext'
 import { logout } from '@/utils/authFunctions'
 import { useNavigate } from 'react-router-dom'
 import useCustomToasts from '@/hooks/useCustomToasts'
+import { Button } from './button'
 
 const ProfileButton = () => {
   const { state, dispatch } = useAuth()
@@ -28,12 +29,22 @@ const ProfileButton = () => {
     <div>
       <DropdownMenu>
         <DropdownMenuTrigger>
-          <Avatar>
-            <AvatarImage src={state.user.profilePicture} />
-            <AvatarFallback>
-              <UserCircle />
-            </AvatarFallback>
-          </Avatar>
+          <div className="flex">
+            <Avatar>
+              <AvatarImage src={state.user.profilePicture} />
+              <AvatarFallback>
+                <UserCircle />
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col items-start justify-center ml-2">
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">
+                {state.user.name}
+              </span>
+              <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
+                @{state.user.username}
+              </span>
+            </div>
+          </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -45,8 +56,10 @@ const ProfileButton = () => {
             Settings
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="cursor-pointer">
-            <span onClick={handleLogout}>Log Out</span>
+          <DropdownMenuItem className="p-1">
+            <Button className="h-7 w-full text-xs" onClick={handleLogout}>
+              Log Out
+            </Button>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

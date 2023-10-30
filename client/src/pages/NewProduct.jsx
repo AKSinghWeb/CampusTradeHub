@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import useApiCall from '@/hooks/useApiCall'
 import useAuthorization from '@/hooks/useAuthorization'
+import useCustomToasts from '@/hooks/useCustomToasts'
 import { productApiService } from '@/services/apiService'
 import { getAuthToken } from '@/utils/authFunctions'
 
@@ -22,12 +23,13 @@ import {
   Upload,
   Map,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 const ProductForm = () => {
   useAuthorization()
   const navigate = useNavigate()
+
   const [newProductApiCall, loading] = useApiCall(
     productApiService.createProduct
   )
@@ -125,17 +127,17 @@ const ProductForm = () => {
   }
 
   return (
-    <div className="min-h-screen flex py-28 px-4 lg:px-12 lg:py-28 items-center justify-center">
+    <div className="min-h-screen  flex px-4 lg:px-12 items-center justify-center">
       <form
         onSubmit={handleSubmit}
-        className="w-full xl:w-2/3 max-md:p-4 p-8 flex flex-col gap-4 border rounded-md shadow-md "
+        className="w-full xl:w-2/3 max-md:p-4 p-8 dark:bg-slate-900 flex flex-col gap-4 border rounded-md shadow-md "
       >
         <h1 className="flex items-center justify-center text-center font-bold text-3xl">
           {' '}
           <PackagePlus size={30} className="text-[#A97835] mr-2" /> Sell Your
           Used Product
         </h1>
-        <div className="flex flex-col-reverse max-md:p-4 p-8 gap-8 lg:flex-row dark:bg-slate-950 border rounded-md ">
+        <div className="flex flex-col-reverse max-md:p-4 p-8 gap-8 lg:flex-row dark:bg-slate-900 border rounded-md ">
           {/* Image Upload Section */}
           <div className="flex flex-col  flex-1">
             <h2 className="text-2xl text-gray-500 max-md:text-center font-bold mb-6">

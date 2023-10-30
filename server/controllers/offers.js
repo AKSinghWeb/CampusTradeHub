@@ -5,23 +5,75 @@ const offerRouter = express.Router()
 const authMiddleware = require('../middlewares/userAuthMiddleware')
 const offerController = require('./offerController')
 
+
+// GET: All of a user's offers
+offerRouter.get('/all-offers', authMiddleware, async (req, res) => {
+  const userId = req.user._id // Assuming user ID is stored in the req.user object
+
+  console.log('userId', userId)
+
+  try {
+    const offersResult = await offerController.getOffers(userId)
+
+    if (offersResult.success) {
+      res.status(200).json(offersResult.offers)
+    } else {
+      res.status(404).json({ error: offersResult.message })
+    }
+  } catch (error) {
+    console.error('Error retrieving offers:', error)
+    res.status(500).json({ error: 'Internal Server Error' })
+  }
+})
+
+// GET: All offers sent by a user
+offerRouter.get('/sent-offers', authMiddleware, async (req, res) => {
+  const userId = req.user._id // Assuming user ID is stored in the req.user object
+
+  try {
+    const offersResult = await offerController.getSentOffers(userId)
+
+    if (offersResult.success) {
+      res.status(200).json(offersResult.offers)
+    } else {
+      res.status(404).json({ error: offersResult.message })
+    }
+  } catch (error) {
+    console.error('Error retrieving offers:', error)
+    res.status(500).json({ error: 'Internal Server Error' })
+  }
+})
+
+
 // POST: Create a new offer for a product
 offerRouter.post('/', authMiddleware, async (req, res) => {
-  const { productId, amount, description } = req.body
+  const {
+    productId,
+    offerPrice,
+    description,
+    mobileNumber,
+    alternateMobileNumber,
+    email,
+  } = req.body
   const buyerId = req.user._id // Assuming user ID is stored in the req.user object
 
   try {
     const offerResult = await offerController.createOffer(
       productId,
       buyerId,
-      amount,
-      description
+      offerPrice,
+      description,
+      mobileNumber,
+      alternateMobileNumber,
+      email
     )
 
     if (offerResult.success) {
-      res
-        .status(200)
-        .json({ message: offerResult.message, offer: offerResult.offer })
+      res.status(201).json({
+        success: true,
+        message: offerResult.message,
+        offer: offerResult.offer,
+      })
     } else {
       res.status(500).json({ error: offerResult.message })
     }
@@ -34,19 +86,19 @@ offerRouter.post('/', authMiddleware, async (req, res) => {
 // POST: Respond to an offer (accept, reject)
 offerRouter.post('/:offerId/respond', authMiddleware, async (req, res) => {
   const { offerId } = req.params
-  const { response, additionalInfo } = req.body
+  const { response, contactInformation } = req.body
   const sellerId = req.user._id // Assuming user ID is stored in the req.user object
 
   try {
     const responseResult = await offerController.respondToOffer(
       offerId,
       response,
-      additionalInfo,
+      contactInformation,
       sellerId
     )
 
     if (responseResult.success) {
-      res.json({ message: responseResult.message })
+      res.json({ success: true, message: responseResult.message })
     } else {
       res.status(404).json({ error: responseResult.message })
     }
@@ -97,8 +149,11 @@ offerRouter.get('/:offerId/messages', authMiddleware, async (req, res) => {
     }
   } catch (error) {
     console.error('Error retrieving messages:', error)
-    res.status(500).json({ error: 'Internal Server Error' })
+    res.status(500).json({ error: 'Internal Server a Error' })
   }
 })
+
+
+
 
 module.exports = offerRouter

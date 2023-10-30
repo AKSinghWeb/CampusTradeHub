@@ -11,17 +11,25 @@ import ProfileButton from '../ui/ProfileButton'
 import Container from '../ui/Container'
 import { Link } from 'react-router-dom'
 import ThemeToggler from '../ThemeToggle'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import logo from '../../assets/logo.svg'
 import { SearchBtnPopUp } from './SearchButtonPopUp'
 import { useAuth } from '@/context/UserAuthContext'
 import { LoginDialog } from '../LoginSignup/LoginDialog'
 import { Button } from '../ui/button'
 
-const Header = () => {
+const Header = ({ onHeightCalculated }) => {
   const [prevScrollPos, setPrevScrollPos] = useState(0)
   const [visible, setVisible] = useState(true)
   const { state } = useAuth()
+  const headerRef = useRef(null)
+
+  useEffect(() => {
+    if (headerRef.current && onHeightCalculated) {
+      const height = headerRef.current.clientHeight
+      onHeightCalculated(height)
+    }
+  }, [onHeightCalculated])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,7 +60,8 @@ const Header = () => {
   return (
     <Container>
       <header
-        className={`fixed top-0 z-50 w-full dark:bg-gray-900 bg-opacity-90 shadow-lg backdrop-filter backdrop-blur-md py-3 px-4 lg:px-12 border-b transition-all duration-300 ease-in-out ${
+        ref={headerRef}
+        className={`fixed top-0 z-50 w-full dark:bg-slate-900 bg-opacity-90 shadow-lg backdrop-filter backdrop-blur-md py-3 px-4 lg:px-12 border-b transition-all duration-300 ease-in-out ${
           visible ? '' : 'opacity-0 transform translate-y-[-100%]'
         }`}
       >
@@ -160,6 +169,16 @@ const Header = () => {
                       <SheetClose>Sell Your Product</SheetClose>
                     </Link>
                   </div>
+                  {state.isLoggedIn && (
+                    <div>
+                      <Link
+                        to={'/sales-inbox'}
+                        className="block px-2 py-1 font-semibold text-lg"
+                      >
+                        <SheetClose>Sales Inbox</SheetClose>
+                      </Link>
+                    </div>
+                  )}
                 </nav>
               </SheetContent>
             </Sheet>
@@ -186,7 +205,7 @@ const Header = () => {
                 >
                   <Link
                     to={'/products/all'}
-                    className="text-sm font-medium transition-colors hover:text-primary"
+                    className="text-sm font-medium transition-colors "
                   >
                     Products
                   </Link>
@@ -203,9 +222,7 @@ const Header = () => {
                     id="dropdownHoverButton"
                     className="text-md  hover:bg-gray-100 dark:hover:bg-gray-800"
                   >
-                    <span className="text-sm font-medium transition-colors hover:text-primary">
-                      Categories
-                    </span>
+                    <span className="text-sm font-medium  ">Categories</span>
                     <ChevronDown
                       size={20}
                       className={`ml-2 transition-transform duration-300 ease-in-out ${
@@ -263,7 +280,7 @@ const Header = () => {
                         </li>
                         <li>
                           <Link
-                            to="/products/free"
+                            to="/products/donations"
                             className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                           >
                             Free Items
@@ -282,12 +299,28 @@ const Header = () => {
                 >
                   <Link
                     to={'/new-product'}
-                    className="text-sm font-medium transition-colors hover:text-primary"
+                    className="text-sm font-medium transition-colors "
                   >
                     Sell Your Product
                   </Link>
                 </Button>
               </div>
+              {state.isLoggedIn && (
+                <div>
+                  <Button
+                    asChild
+                    variant="ghost"
+                    className="text-md  hover:bg-gray-100 dark:hover:bg-gray-800"
+                  >
+                    <Link
+                      to={'/sales-inbox'}
+                      className="text-sm font-medium transition-colors "
+                    >
+                      Sales Inbox
+                    </Link>
+                  </Button>
+                </div>
+              )}
             </nav>
           </div>
           <div className="flex items-center">

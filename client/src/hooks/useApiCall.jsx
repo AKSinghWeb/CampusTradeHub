@@ -13,8 +13,14 @@ const useApiCall = (apiFunction) => {
       setLoading(true)
       const result = await apiFunction(...args)
       showSuccessToast('Success', successMessage)
+      // if (result.data.error) {
+      //   setError(result.data.error)
+      //   showErrorToast('Error', result.data.error)
+      // }
+      console.log('rsutl', result)
       return result
     } catch (err) {
+      console.log('err', err)
       setError(err.message)
       showErrorToast('Error', err.message)
     } finally {

@@ -26,28 +26,28 @@ const Footer = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Github className="h-8 w-8" />
+              <Github className="h-8 w-8 hover:text-primary" />
             </a>
             <a
               href="https://twitter.com/yourtwitter"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Twitter className="h-8 w-8" />
+              <Twitter className="h-8 w-8 hover:text-primary" />
             </a>
             <a
               href="https://instagram.com/yourinstagram"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Instagram className="h-8 w-8" />
+              <Instagram className="h-8 w-8 hover:text-primary" />
             </a>
             <a
               href="https://facebook.com/yourfacebook"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Facebook className="h-8 w-8" />
+              <Facebook className="h-8 w-8 hover:text-primary" />
             </a>
           </div>
         </div>

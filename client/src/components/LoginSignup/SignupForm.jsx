@@ -53,8 +53,8 @@ const SignupForm = () => {
     }
     if (!formData.username) {
       errors.username = 'Username is required'
-    } else if (formData.username.length < 5) {
-      errors.username = 'Username must be at least 5 characters long'
+    } else if (formData.username.length < 3) {
+      errors.username = 'Username must be at least 3 characters long'
     }
     if (!formData.email) {
       errors.email = 'Email is required'

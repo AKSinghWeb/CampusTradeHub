@@ -73,11 +73,18 @@ const ProductPage = () => {
     }
   }
 
+  const checkOwnProduct = () => {
+    if (state.user.id === product.user.id) {
+      return true
+    }
+    return false
+  }
+
   return (
-    <section className="flex min-h-screen items-center py-32 body-font overflow-hidden">
+    <section className="flex min-h-screen items-center body-font overflow-hidden">
       <div className="container max-sm:px-4  mx-auto">
         {loading ? (
-          <div className="flex flex-col mt-64 items-center justify-center h-full">
+          <div className="flex flex-col items-center justify-center h-full">
             <Loader2 className="animate-spin h-24 w-24 text-blue-500" />
             <p className="mt-4 text-lg text-gray-600 dark:text-gray-400">
               Loading Products
@@ -91,10 +98,10 @@ const ProductPage = () => {
             </p>
           </div>
         ) : (
-          <div className="lg:w-4/5 p-6 mx-auto rounded-md shadow-2xl dark:shadow-gray-600 dark:shadow-lg flex flex-wrap">
+          <div className="lg:w-4/5 p-6 mx-auto border rounded-md dark:bg-slate-900 shadow-2xl flex flex-wrap">
             <img
               alt="ecommerce"
-              className="lg:w-1/2 w-full lg:h-auto border-2 object-cover object-center rounded"
+              className="lg:w-1/2 w-full lg:my-6 border  object-cover object-center rounded-md"
               src={product.images}
             />
 
@@ -184,7 +191,11 @@ const ProductPage = () => {
                 )}
                 {!isAdmin && state.isLoggedIn && (
                   <>
-                    <OfferDialog />
+                    {checkOwnProduct() ? (
+                      <Button>Edit</Button>
+                    ) : (
+                      <OfferDialog productId={productId} />
+                    )}
                     {/* <Button className="flex mr-4 border-0 py-2 focus:outline-none rounded">
                       <BadgeIndianRupee size={20} className="mr-2" />
                       Make an offer

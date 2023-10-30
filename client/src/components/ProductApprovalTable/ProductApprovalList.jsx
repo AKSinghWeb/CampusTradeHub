@@ -66,30 +66,32 @@ const ProductApprovalList = () => {
     <div className=" flex items-center justify-center mx-4 lg:mx-32  shadow-md">
       <Table className="rounded-md dark:bg-slate-950 border divide-y divide-gray-200">
         <TableHeader>
-          <TableHead className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-            Sl No.
-          </TableHead>{' '}
-          <TableHead className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-            Title
-          </TableHead>
-          <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-            Category
-          </TableHead>
-          <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-            Price
-          </TableHead>
-          <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-            User
-          </TableHead>
-          <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-            Date Posted
-          </TableHead>
-          <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-            Status
-          </TableHead>
-          <TableHead className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">
-            Actions
-          </TableHead>
+          <tr>
+            <TableHead className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+              Sl No.
+            </TableHead>
+            <TableHead className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+              Title
+            </TableHead>
+            <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+              Category
+            </TableHead>
+            <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+              Price
+            </TableHead>
+            <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+              User
+            </TableHead>
+            <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+              Date Posted
+            </TableHead>
+            <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+              Status
+            </TableHead>
+            <TableHead className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">
+              Actions
+            </TableHead>
+          </tr>
         </TableHeader>
         <TableBody>
           {products.map((product, index) => (

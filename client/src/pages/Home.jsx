@@ -9,7 +9,7 @@ import { Separator } from '../components/ui/separator'
 
 const Home = () => {
   return (
-    <div className="lg:mx-20 min-h-screen mt-[90px]">
+    <div className="lg:mx-20 min-h-screen">
       <HeroSection />
       <CategoryCarousel />
       <Separator />

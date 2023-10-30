@@ -1,6 +1,6 @@
 // ProductCard.js
 // import { Book, Monitor, Coffee, ShoppingCart } from 'lucide-react'
-import { Button } from './ui/button'
+// import { Button } from './ui/button'
 
 import {
   Monitor,
@@ -45,14 +45,14 @@ const ProductCard = ({ product }) => {
         alt={product.name}
         className="w-full h-60 object-cover"
       />
-      <div className="p-4 flex flex-col h-56 justify-between">
+      <div className="p-4 flex flex-col h-44 justify-between">
         <div>
           <div className="flex items-center mb-3">
             {getCategoryIcon(product.category)}
             {product.category}
           </div>
           <h3 className="text-lg font-semibold">{product.title}</h3>
-          <p className="text-sm overflow-hidden line-clamp-3 text-gray-700 dark:text-lime-50 mb-2">
+          <p className="text-sm overflow-hidden line-clamp-2 text-gray-700 dark:text-lime-50 mb-2">
             {product.description}
           </p>
         </div>
@@ -62,7 +62,7 @@ const ProductCard = ({ product }) => {
               &#x20B9; {product.price}
             </p>
           </div>
-          <Button className=" font-bold ">Contact Seller</Button>
+          {/* <Button className=" font-bold ">Contact Seller</Button> */}
         </div>
       </div>
     </div>

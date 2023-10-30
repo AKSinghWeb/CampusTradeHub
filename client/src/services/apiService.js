@@ -4,6 +4,7 @@ import axios from 'axios'
 
 // const apiUrl = 'http://192.168.245.230:3000'
 const apiUrl = 'http://172.17.22.212:3000'
+// const apiUrl = 'http://localhost:3000'
 
 export const userApiService = {
   getMyProfile: async (token) => {
@@ -133,6 +134,62 @@ export const adminApiService = {
   },
 }
 
+
+export const offersApiService = {
+  getOffers: async () => {
+    try {
+      return axios.get(`${apiUrl}/api/products/offers/all-offers`, {
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+      })
+    } catch (error) {
+      handleApiError(error)
+    }
+  },
+  getSentOffers: async () => {
+    try {
+      return axios.get(`${apiUrl}/api/products/offers/sent-offers`, {
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+      })
+    } catch (error) {
+      handleApiError(error)
+    }
+  },
+  createOffer: async (data) => {
+    try {
+      const response = await axios.post(`${apiUrl}/api/products/offers`, data, {
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+      })
+
+      return response.data
+    } catch (error) {
+      handleApiError(error)
+    }
+  },
+  acceptOffer: async (id, data) => {
+    try {
+      const response = await axios.post(
+        `${apiUrl}/api/products/offers/${id}/respond`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${getAuthToken()}`,
+          },
+        }
+      )
+
+      return response.data
+    } catch (error) {
+      handleApiError(error)
+    }
+  },
+}
+
 const handleApiError = (error) => {
   if (error.response) {
     // The request was made and the server responded with a status code
@@ -148,9 +205,7 @@ const handleApiError = (error) => {
       throw new Error(error.response.data.error)
     } else {
       // Handle other status codes as needed
-      throw new Error(
-        `Unexpected Error: Server responded with status ${error.response.status}`
-      )
+      throw new Error(`Error: ${error.response.data.error}`)
     }
   } else if (error.request) {
     // The request was made but no response was received

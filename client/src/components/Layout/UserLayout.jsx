@@ -13,47 +13,42 @@ import UserProfile from '@/components/UserProfile/UserProfile'
 import NotFound from './NotFound'
 import UploadSuccess from '../UploadSuccess'
 import ScrollToTop from '../ScrollToTop'
-
-const DummyProduct = {
-  title: 'Adorable Cat Plushie',
-  description: 'A fluffy and cute cat plushie that brings joy to your life.',
-  price: 15.99,
-  category: 'Toys',
-  location: 'Campus A, Building 2',
-  image: 'https://placekitten.com/800/600',
-  seller: {
-    name: 'CampusTradeHub',
-    avatar: 'https://placekitten.com/100/100',
-  },
-}
+import SalesInbox from '@/pages/SalesInbox'
+import { useState } from 'react'
 
 const UserLayout = () => {
+  const [headerHeight, setHeaderHeight] = useState(0)
+
+  const handleHeightCalculated = (height) => {
+    setHeaderHeight(height)
+  }
+  console.log(headerHeight)
   return (
     <div>
-      <UserHeader />
+      <UserHeader onHeightCalculated={handleHeightCalculated} />
       <ScrollToTop />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/*" element={<NotFound />} />
+      <div className={`pt-[88px] w-full`}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/*" element={<NotFound />} />
 
-        <Route path="/admin" element={<AdminPage />} />
-        <Route
-          path="/products/:category"
-          element={<ProductList type={'category'} />}
-        />
-        <Route
-          path="/products/search/:search"
-          element={<ProductList type={'search'} />}
-        />
-        <Route
-          path="/product/:productId"
-          element={<ProductPage product={DummyProduct} />}
-        />
-        <Route path="/profile" element={<UserProfile />} />
-        <Route path="/new-product" element={<ProductForm />} />
-        <Route path="/new-product-success" element={<UploadSuccess />} />
-      </Routes>
-      <Footer />
+          <Route path="/admin" element={<AdminPage />} />
+          <Route
+            path="/products/:category"
+            element={<ProductList type={'category'} />}
+          />
+          <Route
+            path="/products/search/:search"
+            element={<ProductList type={'search'} />}
+          />
+          <Route path="/product/:productId" element={<ProductPage />} />
+          <Route path="/profile" element={<UserProfile />} />
+          <Route path="/new-product" element={<ProductForm />} />
+          <Route path="/new-product-success" element={<UploadSuccess />} />
+          <Route path="/sales-inbox" element={<SalesInbox />} />
+        </Routes>
+        <Footer />
+      </div>
     </div>
   )
 }

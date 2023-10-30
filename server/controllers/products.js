@@ -30,19 +30,25 @@ productRouter.get('/search', async (req, res) => {
       return res.status(400).json({ error: 'Search query is required.' })
     }
 
-    // Use a case-insensitive regular expression for the search query
-    const regex = new RegExp(q, 'i')
+    // Split the query into an array of words
+    const queryWords = q.split(/\s+/).filter((word) => word.length > 0)
 
-    // sorted by latest products
+    // Create an array of case-insensitive regular expressions for each word
+    const regexArray = queryWords.map((word) => new RegExp(word, 'i'))
 
+    // Use $and to match all conditions
     const products = await Product.find({
-      $or: [
-        { title: { $regex: regex } },
-        { description: { $regex: regex } },
-        { category: { $regex: regex } },
-        { location: { $regex: regex } },
+      $and: [
+        {
+          $or: [
+            { title: { $in: regexArray } },
+            { description: { $in: regexArray } },
+            { category: { $in: regexArray } },
+            { location: { $in: regexArray } },
+          ],
+        },
+        { status: 'approved' },
       ],
-      status: 'approved',
     }).sort({ createdAt: -1 })
 
     res.status(200).json(products)
@@ -51,6 +57,7 @@ productRouter.get('/search', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' })
   }
 })
+
 
 productRouter.get('/:productId', async (req, res) => {
   const { productId } = req.params

@@ -6,7 +6,7 @@ import { Button } from '../ui/button'
 const HeroSection = () => {
   return (
     <>
-      <div data-aos="zoom-in" className="relative w-full ">
+      <div data-aos="zoom-in" className="relative  w-full ">
         <div className="flex px-8 flex-col md:flex-row max-w-full mx-auto py-20 md:py-24 items-center">
           <div className="lg:w-7/12 flex-1 text-center md:text-left">
             <h1 className="font-bold text-3xl md:text-4xl lg:text-5xl xl:text-6xl mb-4 lg:mb-6">
