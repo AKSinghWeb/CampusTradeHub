@@ -7,10 +7,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { MoreVertical } from 'lucide-react'
+// import { RateAndReview } from './RateAndReviewPop'
+import { LoginDialog } from '../LoginSignup/LoginDialog'
 
 export function ProductSellerMenu() {
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={true}>
       <DropdownMenuTrigger asChild>
         <div className="cursor-pointer">
           <MoreVertical size={36} className="mr-1" />
@@ -21,13 +23,14 @@ export function ProductSellerMenu() {
           <DropdownMenuItem className="cursor-pointer">
             View User Profile
           </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem className="cursor-pointer">
+          {/* <DropdownMenuSeparator /> */}
+          {/* <DropdownMenuItem className="cursor-pointer">
             All Postings by User{' '}
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
           <DropdownMenuSeparator />
           <DropdownMenuItem className="cursor-pointer">
-            Rate User
+            {/* <RateAndReview /> */}
+            <LoginDialog />
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="cursor-pointer">

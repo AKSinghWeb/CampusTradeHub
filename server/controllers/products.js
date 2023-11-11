@@ -1,6 +1,5 @@
 const productRouter = require('express').Router()
 const { upload } = require('../config/multerConfig')
-// const path = require('path')
 const { bucket } = require('../config/firebase')
 const Product = require('../models/product')
 const userAuthMiddleware = require('../middlewares/userAuthMiddleware')
@@ -58,6 +57,19 @@ productRouter.get('/search', async (req, res) => {
   }
 })
 
+// Get products for a specific user including pending and rejected offers
+productRouter.get('/user', userAuthMiddleware, async (req, res) => {
+  console.log(req.user._id)
+  try {
+    const products = await Product.find({ user: req.user._id }).sort({
+      createdAt: -1,
+    })
+
+    res.status(200).json(products)
+  } catch (error) {
+    return res.status(500).json({ message: 'Internal Server Error' })
+  }
+})
 
 productRouter.get('/:productId', async (req, res) => {
   const { productId } = req.params
@@ -92,24 +104,6 @@ productRouter.get('/category/:category', async (req, res) => {
       return res
         .status(404)
         .json({ error: 'No products with the specified category found' })
-    }
-
-    res.status(200).json(products)
-  } catch (error) {
-    return res.status(500).json({ message: 'Internal Server Error' })
-  }
-})
-
-productRouter.get('/user/:userId', async (req, res) => {
-  const { userId } = req.params
-
-  try {
-    const products = await Product.find({ user: userId })
-
-    if (!products) {
-      return res
-        .status(404)
-        .json({ error: 'No products with the specified user found' })
     }
 
     res.status(200).json(products)
@@ -161,7 +155,7 @@ productRouter.post(
 
       if (req.file) {
         const { file } = req
-        const fileName = `products-images/${Date.now()}-${newProduct._id}`
+        const fileName = `products-images/productImage-${newProduct._id}`
         const fileUpload = bucket.file(fileName)
 
         const blobStream = fileUpload.createWriteStream({
@@ -176,7 +170,7 @@ productRouter.post(
 
         blobStream.on('finish', async () => {
           // The public URL can be used to directly access the file.
-          const publicUrl = `https://storage.googleapis.com/${bucket.name}/${fileUpload.name}`
+          const publicUrl = fileUpload.publicUrl()
           newProduct.images = publicUrl // Save the image URL in the product document
           const product = await newProduct.save() // Save the product with the image URL
           await User.findByIdAndUpdate(req.user._id, {

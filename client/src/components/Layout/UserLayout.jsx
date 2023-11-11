@@ -9,23 +9,18 @@ import AdminPage from '../../pages/AdminHome'
 import ProductForm from '@/pages/NewProduct'
 import ProductList from '@/pages/ProductList'
 // import UserProfileManagement from '@/components/UserProfileManagement'
-import UserProfile from '@/components/UserProfile/UserProfile'
 import NotFound from './NotFound'
 import UploadSuccess from '../UploadSuccess'
 import ScrollToTop from '../ScrollToTop'
 import SalesInbox from '@/pages/SalesInbox'
-import { useState } from 'react'
+import EditProductForm from '@/pages/EditProduct'
+import UserProfile from '@/pages/UserProfile'
+import MyUserProfile from '../../pages/MyUserProfile'
 
 const UserLayout = () => {
-  const [headerHeight, setHeaderHeight] = useState(0)
-
-  const handleHeightCalculated = (height) => {
-    setHeaderHeight(height)
-  }
-  console.log(headerHeight)
   return (
     <div>
-      <UserHeader onHeightCalculated={handleHeightCalculated} />
+      <UserHeader />
       <ScrollToTop />
       <div className={`pt-[88px] w-full`}>
         <Routes>
@@ -42,9 +37,15 @@ const UserLayout = () => {
             element={<ProductList type={'search'} />}
           />
           <Route path="/product/:productId" element={<ProductPage />} />
-          <Route path="/profile" element={<UserProfile />} />
+          <Route path="/user/:tab" element={<MyUserProfile />} />
+          <Route path="/user-profile/:userId" element={<UserProfile />} />
           <Route path="/new-product" element={<ProductForm />} />
+          <Route
+            path="/edit-product/:productId"
+            element={<EditProductForm />}
+          />
           <Route path="/new-product-success" element={<UploadSuccess />} />
+
           <Route path="/sales-inbox" element={<SalesInbox />} />
         </Routes>
         <Footer />

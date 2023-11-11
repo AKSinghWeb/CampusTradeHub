@@ -1,17 +1,16 @@
 import { Image, Trash2 } from 'lucide-react'
-import { useState, useRef } from 'react' // Import useRef
+import { useRef } from 'react' // Import useRef
 import FileResizer from 'react-image-file-resizer'
 import { Button } from './ui/button'
 
 export const ImageUpload = ({ image, setImage, setOriginalFilename }) => {
-  const [imagePreview, setImagePreview] = useState(null)
+  // const [imagePreview, setImagePreview] = useState(null)
   const inputRef = useRef(null) // Create a ref for the input element
 
   const handleImageChange = async (e) => {
     const file = e.target.files[0]
     setOriginalFilename(file.name)
 
-    // Resize and compress the image
     FileResizer.imageFileResizer(
       file,
       400, // maxWidth
@@ -20,7 +19,7 @@ export const ImageUpload = ({ image, setImage, setOriginalFilename }) => {
       70, // quality
       0, // rotation
       (blob) => {
-        setImagePreview(URL.createObjectURL(blob))
+        // setImagePreview(URL.createObjectURL(blob))
         setImage(blob)
       },
       'blob' // outputType
@@ -29,9 +28,9 @@ export const ImageUpload = ({ image, setImage, setOriginalFilename }) => {
 
   const handleRemoveImage = () => {
     setImage(null)
-    setImagePreview(null)
+    // setImagePreview(null)
     setOriginalFilename(null)
-    inputRef.current.value = '' // Clear the input value to allow re-uploading the same file
+    inputRef.current = ''
   }
 
   return (
@@ -42,16 +41,11 @@ export const ImageUpload = ({ image, setImage, setOriginalFilename }) => {
       >
         {image ? (
           <img
-            src={imagePreview}
+            src={image instanceof Blob ? URL.createObjectURL(image) : image}
             alt="Product"
             className="border w-auto max-h-[22rem] rounded-lg"
           />
         ) : (
-          // <div className="flex flex-col w-full max-h-[26rem] items-center justify-center border shadow-sm dark:shadow-gray-600  p-4 bg-gray-100 dark:bg-slate-950 rounded-lg">
-          //   <Image className="w-12 h-12 mt-2 text-gray-600" />
-          //   Click to upload image
-          // </div>
-
           <div className="flex items-center justify-center w-full">
             <div
               htmlFor="image"
@@ -72,8 +66,8 @@ export const ImageUpload = ({ image, setImage, setOriginalFilename }) => {
                 name="image"
                 accept="image/*"
                 onChange={handleImageChange}
-                ref={inputRef} // Set the ref for the input element
-                key={image ? 'hasImage' : 'noImage'} // Set a key based on whether there is an image
+                ref={inputRef}
+                key={image ? 'hasImage' : 'noImage'}
                 className="sr-only"
               />
             </div>

@@ -12,6 +12,7 @@ import {
   Armchair,
   Microwave,
 } from 'lucide-react'
+import { Badge } from './ui/badge'
 
 const getCategoryIcon = (category) => {
   const lowerCaseCategory = category.toLowerCase()
@@ -37,7 +38,7 @@ const getCategoryIcon = (category) => {
   }
 }
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, user = false }) => {
   return (
     <div className="border border-gray-300 rounded overflow-hidden shadow-md transition-transform duration-400 ease-in-out hover:scale-105">
       <img
@@ -62,7 +63,29 @@ const ProductCard = ({ product }) => {
               &#x20B9; {product.price}
             </p>
           </div>
-          {/* <Button className=" font-bold ">Contact Seller</Button> */}
+          {user && (
+            <div className="flex items-center">
+              {product.status === 'sold' ? (
+                <Badge className="mr-3 bg-red-600 hover:bg-red-600">Sold</Badge>
+              ) : product.status === 'approved' ? (
+                <Badge className="mr-3 bg-green-600 hover:bg-green-600">
+                  Approved
+                </Badge>
+              ) : product.status === 'pending' ? (
+                <Badge className="mr-3 bg-yellow-600 hover:bg-yellow-600">
+                  Pending
+                </Badge>
+              ) : product.status === 'rejected' ? (
+                <Badge className="mr-3 bg-red-600 hover:bg-red-600">
+                  Rejected
+                </Badge>
+              ) : (
+                <Badge className="mr-3 bg-green-600 hover:bg-green-600">
+                  Approved
+                </Badge>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

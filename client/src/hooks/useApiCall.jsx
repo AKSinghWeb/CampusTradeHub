@@ -17,7 +17,7 @@ const useApiCall = (apiFunction) => {
       //   setError(result.data.error)
       //   showErrorToast('Error', result.data.error)
       // }
-      console.log('rsutl', result)
+      console.log('resutl', result)
       return result
     } catch (err) {
       console.log('err', err)

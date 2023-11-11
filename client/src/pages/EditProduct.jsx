@@ -5,17 +5,16 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { useAuth } from '@/context/UserAuthContext'
 import useApiCall from '@/hooks/useApiCall'
 import useAuthorization from '@/hooks/useAuthorization'
 import { productApiService } from '@/services/apiService'
 import { getAuthToken } from '@/utils/authFunctions'
+import axios from 'axios'
 
 import {
   PackagePlus,
   X,
   List,
-  MapPin,
   Package,
   FileText,
   IndianRupee,
@@ -24,13 +23,32 @@ import {
   Map,
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
-const ProductForm = () => {
+const EditProductForm = () => {
   useAuthorization()
   const navigate = useNavigate()
-  const { state } = useAuth()
-  console.log(state)
+  const productId = useParams().productId
+  const [productLoading, setProductLoading] = useState(true)
+  const [image, setImage] = useState(null)
+  const [originalFilename, setOriginalFilename] = useState(null)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await productApiService.getProduct(productId)
+        const data = response.data
+        setProduct(data)
+        setImage(data.images)
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      } finally {
+        setProductLoading(false)
+      }
+    }
+
+    fetchData() // No dependencies here
+  }, [productId])
 
   const [newProductApiCall, loading] = useApiCall(
     productApiService.createProduct
@@ -51,8 +69,6 @@ const ProductForm = () => {
     location: '',
   })
 
-  const [image, setImage] = useState(null)
-  const [originalFilename, setOriginalFilename] = useState(null)
   const suggestions = [
     'Books',
     'Electronics',
@@ -112,31 +128,38 @@ const ProductForm = () => {
     postData.append('category', product.category)
     postData.append('location', product.location)
     {
-      image ? postData.append('productImage', image, originalFilename) : null
+      image instanceof Blob
+        ? postData.append('productImage', image, originalFilename)
+        : null
     }
 
     try {
-      const response = await newProductApiCall(
-        'Product uploaded successfully!',
-        getAuthToken(),
-        postData
-      )
-      navigate('/new-product-success')
-      console.log(response)
+      // const response = await newProductApiCall(
+      //   'Product uploaded successfully!',
+      //   getAuthToken(),
+      //   postData
+      // )
+      // navigate('/new-product-success')
+      // console.log(response)
+
+      // print form data
+      for (var pair of postData.entries()) {
+        console.log(pair)
+      }
     } catch (error) {
       console.error('Product add failed', error)
     }
   }
 
   return (
-    <div className="min-h-screen  flex px-4 lg:px-12 items-center justify-center">
+    <div className="min-h-screen  flex px-4 lg:px-12 lg:pb-40 items-center justify-center">
       <form
         onSubmit={handleSubmit}
         className="w-full xl:w-2/3 max-md:p-4 p-8 dark:bg-slate-900 flex flex-col gap-4 border rounded-md shadow-md "
       >
         <h1 className="flex items-center justify-center text-center font-bold text-3xl">
           {' '}
-          <PackagePlus size={30} className="text-[#A97835] mr-2" /> Sell Your
+          <PackagePlus size={30} className="text-[#A97835] mr-2" /> Edit Your
           Used Product
         </h1>
         <div className="flex flex-col-reverse max-md:p-4 p-8 gap-8 lg:flex-row dark:bg-slate-900 border rounded-md ">
@@ -146,6 +169,7 @@ const ProductForm = () => {
               Product Image
             </h2>
             <ImageUpload
+              prevImage={productLoading ? null : product.productImage}
               image={image}
               setImage={setImage}
               setOriginalFilename={setOriginalFilename}
@@ -310,4 +334,4 @@ const ProductForm = () => {
   )
 }
 
-export default ProductForm
+export default EditProductForm

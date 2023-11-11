@@ -14,12 +14,16 @@ export const AuthProvider = ({ children }) => {
   const reducer = (state, action) => {
     switch (action.type) {
       case 'LOGIN':
+        // Save user information to local storage
+        localStorage.setItem('user', JSON.stringify(action.payload))
         return {
           ...state,
           isLoggedIn: true,
           user: action.payload,
         }
       case 'LOGOUT':
+        // Clear user information from local storage
+        localStorage.removeItem('user')
         return {
           ...state,
           isLoggedIn: false,
@@ -30,7 +34,14 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  const [state, dispatch] = useReducer(reducer, initialState)
+  // Check local storage for saved user information
+  const storedUser = JSON.parse(localStorage.getItem('user'))
+
+  const [state, dispatch] = useReducer(reducer, {
+    ...initialState,
+    ...(storedUser && { isLoggedIn: true, user: storedUser }),
+  })
+
 
   useEffect(() => {
     const fetchUserProfile = async () => {

@@ -1,6 +1,8 @@
 const userRouter = require('express').Router()
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const { upload } = require('../config/multerConfig')
+const { bucket } = require('../config/firebase')
 const User = require('../models/user')
 const adminAuthMiddleware = require('../middlewares/adminAuthMiddleware')
 const userAuthMiddleware = require('../middlewares/userAuthMiddleware')
@@ -66,5 +68,67 @@ userRouter.get('/my-profile', userAuthMiddleware, async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' })
   }
 })
+
+userRouter.get('/:id', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id)
+    res.status(200).json(user)
+  } catch (err) {
+    console.error('Error retrieving user:', err.message)
+    res.status(500).json({ error: 'Internal Server Error' })
+  }
+})
+
+// Update Profile Picture (User)
+userRouter.put(
+  '/profile-picture',
+  userAuthMiddleware,
+  upload.single('profilePicture'),
+  async (req, res) => {
+    try {
+      const user = await User.findById(req.user._id)
+
+      if (!user) {
+        return res.status(404).json({ error: 'User not found.' })
+      }
+
+      if (req.file) {
+        const { file } = req
+        const fileName = `profile-pictures/profilePicture-${user._id}`
+        const fileUpload = bucket.file(fileName)
+
+        const blobStream = fileUpload.createWriteStream({
+          metadata: {
+            contentType: file.mimetype,
+          },
+        })
+
+        blobStream.on('error', (error) => {
+          res.status(500).send(`Error uploading file: ${error.message}`)
+        })
+
+        blobStream.on('finish', async () => {
+          // The public URL can be used to directly access the file.
+          const url = fileUpload.publicUrl()
+
+          user.profilePicture = url
+          const updatedUser = await user.save() // Save the product with the image URL
+
+          res.status(200).json(updatedUser)
+        })
+
+        blobStream.end(file.buffer)
+      } else {
+        // If no file is present, save the product without an image
+        const updatedUser = await user.save()
+
+        res.status(200).json(updatedUser)
+      }
+    } catch (err) {
+      console.error('Error updating profile picture:', err.message)
+      res.status(500).json({ error: 'Internal Server Error' })
+    }
+  }
+)
 
 module.exports = userRouter

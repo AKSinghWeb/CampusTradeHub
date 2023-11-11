@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { UserCircle } from 'lucide-react'
 import { useAuth } from '@/context/UserAuthContext'
 import { logout } from '@/utils/authFunctions'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import useCustomToasts from '@/hooks/useCustomToasts'
 import { Button } from './button'
 
@@ -36,7 +36,7 @@ const ProfileButton = () => {
                 <UserCircle />
               </AvatarFallback>
             </Avatar>
-            <div className="flex flex-col items-start justify-center ml-2">
+            <div className="flex flex-col w-full items-start justify-center ml-2">
               <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">
                 {state.user.name}
               </span>
@@ -49,12 +49,21 @@ const ProfileButton = () => {
         <DropdownMenuContent>
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="cursor-pointer">
-            My Profile
-          </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer">
-            Settings
-          </DropdownMenuItem>
+          <Link to="/user/profile">
+            <DropdownMenuItem className="cursor-pointer">
+              My Profile
+            </DropdownMenuItem>
+          </Link>
+          <Link to="/user/my-postings">
+            <DropdownMenuItem className="cursor-pointer">
+              My Postings
+            </DropdownMenuItem>
+          </Link>
+          <Link to="/user/settings">
+            <DropdownMenuItem className="cursor-pointer">
+              Settings
+            </DropdownMenuItem>
+          </Link>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="p-1">
             <Button className="h-7 w-full text-xs" onClick={handleLogout}>

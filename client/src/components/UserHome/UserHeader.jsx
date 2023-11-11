@@ -18,18 +18,11 @@ import { useAuth } from '@/context/UserAuthContext'
 import { LoginDialog } from '../LoginSignup/LoginDialog'
 import { Button } from '../ui/button'
 
-const Header = ({ onHeightCalculated }) => {
+const Header = () => {
   const [prevScrollPos, setPrevScrollPos] = useState(0)
   const [visible, setVisible] = useState(true)
   const { state } = useAuth()
   const headerRef = useRef(null)
-
-  useEffect(() => {
-    if (headerRef.current && onHeightCalculated) {
-      const height = headerRef.current.clientHeight
-      onHeightCalculated(height)
-    }
-  }, [onHeightCalculated])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -61,7 +54,7 @@ const Header = ({ onHeightCalculated }) => {
     <Container>
       <header
         ref={headerRef}
-        className={`fixed top-0 z-50 w-full dark:bg-slate-900 bg-opacity-90 shadow-lg backdrop-filter backdrop-blur-md py-3 px-4 lg:px-12 border-b transition-all duration-300 ease-in-out ${
+        className={`fixed top-0 z-50 w-full dark:bg-slate-900 bg-opacity-90 shadow-lg backdrop-filter backdrop-blur-md py-3 px-4 lg:px-8 border-b transition-all duration-300 ease-in-out ${
           visible ? '' : 'opacity-0 transform translate-y-[-100%]'
         }`}
       >
