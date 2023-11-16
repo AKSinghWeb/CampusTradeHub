@@ -91,7 +91,19 @@ reviewRouter.delete('/:id', userAuthMiddleware, async (req, res) => {
 
     await Review.findByIdAndDelete(req.params.id)
 
-    res.status(200).json({ message: 'Review deleted successfully' })
+    const reviewee = await User.findById(review.revieweeId)
+    reviewee.reviewCount -= 1
+    reviewee.averageRating = (
+      (reviewee.averageRating * (reviewee.reviewCount + 1) - review.rating) /
+      reviewee.reviewCount
+    ).toFixed(2)
+    console.log(reviewee)
+    await reviewee.save()
+
+    res.status(200).json({
+      message: 'Review deleted successfully',
+      reviewId: review._id.toString(),
+    })
   } catch (error) {
     console.log(error)
     res.status(500).json({ error: error.message })

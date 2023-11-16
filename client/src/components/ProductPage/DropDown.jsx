@@ -76,7 +76,7 @@ const Dropdown = ({ product }) => {
               className="block mx-1  px-2 py-1 text-sm rounded-sm hover:bg-gray-200 dark:hover:bg-slate-800"
               role="menuitem"
             >
-              <ReportUser />
+              <ReportUser userId={product.user.id} />
             </div>
           </div>
         </div>

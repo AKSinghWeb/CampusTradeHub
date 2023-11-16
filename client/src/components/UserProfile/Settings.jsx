@@ -10,22 +10,32 @@ import { Loader2, Settings } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { PasswordInput } from '../ui/PasswordInput'
+import { userApiService } from '@/services/apiService'
+import useApiCall from '@/hooks/useApiCall'
 
 const UserSettings = () => {
   const { state } = useAuth()
 
-  const loading = false
+  const [updateUsernameApiCall, loading] = useApiCall(
+    userApiService.updateUsername
+  )
+  const [updatePasswordApiCall, loading2] = useApiCall(
+    userApiService.updatePassword
+  )
 
   const [newUsername, setNewUsername] = useState(`${state.user.username}`)
   const [newUsernameError, setNewUsernameError] = useState({
     username: '',
   })
+
   const [password, setPassword] = useState({
+    oldPassword: '',
     newPassword: '',
     confirmPassword: '',
   })
 
   const [passwordError, setPasswordError] = useState({
+    oldPassword: '',
     newPassword: '',
     confirmPassword: '',
   })
@@ -38,6 +48,12 @@ const UserSettings = () => {
 
   const validatePassword = () => {
     let errors = {}
+
+    if (!password.oldPassword) {
+      errors.oldPassword = 'Old Password is required'
+    } else if (password.oldPassword.length < 8) {
+      errors.oldPassword = 'Old Password must be at least 8 characters'
+    }
 
     if (!password.newPassword) {
       errors.newPassword = 'Password is required'
@@ -62,6 +78,24 @@ const UserSettings = () => {
     if (Object.keys(errors).length > 0) {
       setPasswordError(errors)
       return
+    }
+
+    try {
+      const response = await updatePasswordApiCall(
+        'Password Updated successfully!',
+        {
+          password: password.oldPassword,
+          newPassword: password.newPassword,
+        }
+      )
+      console.log(response)
+      setPassword({
+        oldPassword: '',
+        newPassword: '',
+        confirmPassword: '',
+      })
+    } catch (error) {
+      console.log(error)
     }
   }
 
@@ -91,6 +125,18 @@ const UserSettings = () => {
     if (Object.keys(errors).length > 0) {
       setNewUsernameError(errors)
       return
+    }
+
+    try {
+      const response = await updateUsernameApiCall(
+        'Username Updated successfully!',
+        {
+          username: newUsername,
+        }
+      )
+      console.log(response)
+    } catch (error) {
+      console.log(error)
     }
   }
 
@@ -151,6 +197,26 @@ const UserSettings = () => {
             </h2>
             <div className="flex flex-col gap-4">
               <div className="flex-1">
+                <Label htmlFor="oldPassword">Old Password</Label>
+                <div className="">
+                  <PasswordInput
+                    type="password"
+                    id="oldPassword"
+                    name="oldPassword"
+                    value={password.oldPassword}
+                    onChange={handlePasswordChange}
+                    placeholder="Enter Old Password"
+                    className="p-2 pr-6"
+                  />
+                </div>
+                {passwordError.oldPassword && (
+                  <p className="text-red-500 ml-2 font-semibold text-sm">
+                    {passwordError.oldPassword}
+                  </p>
+                )}
+              </div>
+
+              <div className="flex-1">
                 <Label htmlFor="newPassword">New Password</Label>
                 <div className="">
                   <PasswordInput
@@ -192,7 +258,7 @@ const UserSettings = () => {
           </div>
           <div className="flex mt-2">
             <Button type="submit" disabled={loading} className="flex py-2 ">
-              {loading ? (
+              {loading2 ? (
                 <>
                   {' '}
                   <Loader2 className="animate-spin mr-2" />{' '}

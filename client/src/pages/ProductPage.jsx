@@ -1,9 +1,6 @@
 import {
-  // MessageSquare,
   MapPinned,
   UserCircle,
-  // BadgeIndianRupee,
-  Trash2,
   PackageCheck,
   PackageX,
   Loader2,
@@ -21,6 +18,9 @@ import { useEffect, useState } from 'react'
 import { adminApiService, productApiService } from '@/services/apiService'
 import { OfferDialog } from '@/components/Offer/OfferDialog'
 import Dropdown from '@/components/ProductPage/DropDown'
+import { AlertDialogSold } from '@/components/Alerts/AlertDialogSold'
+import { AlertDialogDelete } from '@/components/Alerts/AlertDialogDelete'
+import { ReportProduct } from '@/components/ProductPage/ReportProduct'
 
 const ProductPage = () => {
   const { state } = useAuth()
@@ -76,6 +76,8 @@ const ProductPage = () => {
   }
 
   const checkOwnProduct = () => {
+    if (!product.user) return false
+
     if (state.user.id === product.user.id) {
       return true
     }
@@ -154,7 +156,11 @@ const ProductPage = () => {
 
                 <div className="flex my-8">
                   <span className=" flex items-center title-font font-medium text-5xl text-[#3b82f6]">
-                    ₹{product.price}
+                    {product.price === 0 ? (
+                      <span>Free</span>
+                    ) : (
+                      <span>&#x20B9; {product.price}</span>
+                    )}
                   </span>
                 </div>
                 <div className="flex mb-8">
@@ -179,57 +185,27 @@ const ProductPage = () => {
                   )}{' '}
                   {isAdmin && product.status !== 'pending' && (
                     <>
-                      {/* <Button className="flex mr-4 border-0 py-2 focus:outline-none rounded">
-                      <Edit3 size={20} className="mr-2" />
-                      Edit Product
-                    </Button> */}
-                      <Button
-                        variant="outline"
-                        className="flex py-2 bg-red-600 hover:bg-red-700 hover:text-white text-white rounded"
-                      >
-                        <Trash2 size={20} className="mr-2" />
-                        Delete Product
-                      </Button>
+                      <AlertDialogDelete productId={productId} />
                     </>
                   )}
                   {!isAdmin && state.isLoggedIn && (
                     <>
                       {checkOwnProduct() ? (
                         <>
-                          <div className="flex">
+                          <div className="flex flex-wrap gap-4">
                             <Link to={`/edit-product/${productId}`}>
-                              <Button className="flex mr-4 bg-blue-600 hover:bg-blue-700 border-0 py-2 focus:outline-none rounded">
+                              <Button className="flex  bg-blue-600 hover:bg-blue-700 border-0 py-2 focus:outline-none rounded">
                                 <Edit3 size={20} className="mr-2" />
                                 Edit
                               </Button>
                             </Link>
-                            <Button className="flex mr-4 border-0 py-2 focus:outline-none rounded">
-                              <PackageCheck size={20} className="mr-2" />
-                              Mark as Sold
-                            </Button>
-                            <Button
-                              variant="outline"
-                              className="flex py-2 bg-red-600 hover:bg-red-700 hover:text-white text-white rounded"
-                            >
-                              <Trash2 size={20} className="mr-2" />
-                              Delete Product
-                            </Button>
+                            <AlertDialogSold productId={productId} />
+                            <AlertDialogDelete productId={productId} />
                           </div>
                         </>
                       ) : (
                         <OfferDialog productId={productId} />
                       )}
-                      {/* <Button className="flex mr-4 border-0 py-2 focus:outline-none rounded">
-                      <BadgeIndianRupee size={20} className="mr-2" />
-                      Make an offer
-                    </Button> */}
-                      {/* <Button
-                      variant="outline"
-                      className="flex py-2 bg-slate-300 text-black rounded"
-                    >
-                      <MessageSquare size={20} className="mr-2" />
-                      Contact Seller
-                    </Button> */}
                     </>
                   )}
                   {!isAdmin && !state.isLoggedIn && (
@@ -241,37 +217,50 @@ const ProductPage = () => {
                 </div>
                 <Separator />
                 <div className="flex items-center py-2">
-                  <Avatar>
-                    <AvatarImage src={product.user.profileImage} />
-                    <AvatarFallback>
-                      <UserCircle />
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-row ml-3 items-center">
-                    <span className="font-bold">{product.user.name}</span>
-                    <div className="flex items-center">
-                      <span className="">Seller</span>
-                      <span className="ml-3">
-                        {product.user.averageRating < 1 ? (
-                          ''
-                        ) : (
-                          <div className="flex items-center">
-                            {product.user.averageRating}
-                            <Star
-                              color=""
-                              fill="rgb(250 204 21)"
-                              size={20}
-                              className="ml-1 mb-1 inline"
-                            />
-                          </div>
-                        )}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="ml-6">
-                    <Dropdown product={product} />
-                  </div>
+                  {product.user && (
+                    <>
+                      <Avatar>
+                        <AvatarImage src={product.user.profilePicture} />
+                        <AvatarFallback>
+                          <UserCircle />
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-row ml-3 items-center">
+                        <span className="font-bold">{product.user.name}</span>
+                        <div className="flex items-center">
+                          <span className="">Seller</span>
+                          <span className="ml-3">
+                            {product.user.averageRating < 1 ? (
+                              ''
+                            ) : (
+                              <div className="flex items-center">
+                                {product.user.averageRating}
+                                <Star
+                                  color=""
+                                  fill="rgb(250 204 21)"
+                                  size={20}
+                                  className="ml-1 mb-1 inline"
+                                />
+                              </div>
+                            )}
+                          </span>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                  {!isAdmin && state.isLoggedIn && (
+                    <>
+                      {checkOwnProduct() ? (
+                        <></>
+                      ) : (
+                        <div className="ml-6">
+                          <Dropdown product={product} />
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
+
                 <Separator />
               </div>
             </div>
@@ -282,15 +271,22 @@ const ProductPage = () => {
                   {new Date(product.createdAt).toLocaleDateString()}
                 </span>
               </div>
-              <Separator
-                orientation="vertical"
-                className="h-6 w-[1.5px] bg-gray-400 mx-2"
-              />
-              <div className="flex cursor-pointer">
-                <span className="font-semibold underline text-red-500">
-                  Report this product
-                </span>
-              </div>
+
+              {!isAdmin && state.isLoggedIn && (
+                <>
+                  {checkOwnProduct() ? (
+                    <></>
+                  ) : (
+                    <>
+                      <Separator
+                        orientation="vertical"
+                        className="h-6 w-[1.5px] bg-gray-400 mx-2"
+                      />
+                      <ReportProduct productId={productId} />
+                    </>
+                  )}
+                </>
+              )}
             </div>
           </div>
         )}

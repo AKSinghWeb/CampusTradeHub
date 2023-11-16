@@ -10,17 +10,17 @@ import { Button } from '@/components/ui/button'
 import { useEffect, useState } from 'react'
 import { adminApiService } from '@/services/apiService'
 import { Link } from 'react-router-dom'
-import { Badge } from '../ui/badge'
+import { AdminUserDelete } from '../Alerts/AdminUserDelete'
 
-const ProductApprovalList = () => {
-  const [products, setProducts] = useState([])
+const AllUsers = () => {
+  const [users, setUsers] = useState([])
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await adminApiService.getPendingProducts()
+        const response = await adminApiService.getAllUsers()
         const data = response.data
-        setProducts(data)
+        setUsers(data)
       } catch (error) {
         console.error('Error fetching data:', error)
       } finally {
@@ -31,31 +31,12 @@ const ProductApprovalList = () => {
     fetchData()
   }, [])
 
-  const handleApprove = async (productId) => {
+  const handleDelete = (userId) => {
     try {
-      // Call your API service to approve the product
-      await adminApiService.approveProduct(productId)
-      // Update the local state or refetch data
-      const updatedProducts = products.map((product) =>
-        product.id === productId ? { ...product, status: 'approved' } : product
-      )
-      setProducts(updatedProducts)
+      const updatedUsers = users.filter((user) => user.id !== userId)
+      setUsers(updatedUsers)
     } catch (error) {
       console.error('Error approving product:', error)
-    }
-  }
-
-  const handleReject = async (productId) => {
-    try {
-      // Call your API service to reject the product
-      await adminApiService.rejectProduct(productId)
-      // Update the local state or refetch data
-      const updatedProducts = products.map((product) =>
-        product.id === productId ? { ...product, status: 'rejected' } : product
-      )
-      setProducts(updatedProducts)
-    } catch (error) {
-      console.error('Error rejecting product:', error)
     }
   }
 
@@ -68,22 +49,22 @@ const ProductApprovalList = () => {
               Sl No.
             </TableHead>
             <TableHead className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-              Title
+              Username
             </TableHead>
             <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-              Category
+              Name
             </TableHead>
             <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-              Price
+              email
             </TableHead>
             <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-              User
+              Contact Number
             </TableHead>
             <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-              Date Posted
+              Ratings
             </TableHead>
             <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-              Status
+              Products
             </TableHead>
             <TableHead className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">
               Actions
@@ -91,54 +72,40 @@ const ProductApprovalList = () => {
           </tr>
         </TableHeader>
         <TableBody>
-          {products.map((product, index) => (
-            <TableRow key={product.id}>
+          {users.map((user, index) => (
+            <TableRow key={user.id}>
               <TableCell className="px-6 py-4 whitespace-nowrap">
                 {index + 1}
               </TableCell>
               <TableCell className="px-6 py-4 whitespace-nowrap">
-                {product.title}
+                {user.username}
               </TableCell>
               <TableCell className="px-6 py-4 whitespace-nowrap">
-                {product.category}
+                {user.name}
               </TableCell>
               <TableCell className="px-6 py-4 whitespace-nowrap">
-                {product.price}
+                {user.email}
               </TableCell>
               <TableCell className="px-6 py-4 whitespace-nowrap">
-                {product.user.username}
+                {user.contactNumber ? user.contactNumber : 'N/A'}
               </TableCell>
               <TableCell className="px-6 py-4 whitespace-nowrap">
-                {new Date(product.createdAt).toLocaleDateString()}
+                {user.averageRating}
               </TableCell>
               <TableCell className="px-6 py-4 whitespace-nowrap">
-                {product.status === 'pending' && (
-                  <Badge className="bg-yellow-600">Pending</Badge>
-                )}
+                {user.products.length}
               </TableCell>
               <TableCell className="px-6 py-4 flex items-center justify-center whitespace-nowrap">
                 <div className="flex  items-center space-x-2">
-                  <Link to={`/products/${product.id}`}>
+                  <Link to={`/user-profile/${user.id}`}>
                     <Button className="w-24">
                       <span className="">View</span>
                     </Button>
                   </Link>
-                  {product.status === 'pending' && (
-                    <>
-                      <Button
-                        onClick={() => handleApprove(product.id)}
-                        className="bg-green-500 hover:bg-green-600 text-center text-white w-24 px-4 py-2 transition-all duration-300  "
-                      >
-                        <span className="">Approve</span>
-                      </Button>
-                      <Button
-                        onClick={() => handleReject(product.id)}
-                        className="bg-red-500 hover:bg-red-600 text-center text-white w-24 px-4 py-2 transition-all duration-300 "
-                      >
-                        <span className="">Reject</span>
-                      </Button>
-                    </>
-                  )}
+                  <AdminUserDelete
+                    userId={user.id}
+                    handleDelete={handleDelete}
+                  />
                 </div>
               </TableCell>
             </TableRow>
@@ -149,4 +116,4 @@ const ProductApprovalList = () => {
   )
 }
 
-export default ProductApprovalList
+export default AllUsers

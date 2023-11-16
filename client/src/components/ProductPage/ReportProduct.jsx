@@ -4,7 +4,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 
-import { AlertCircle, Flag, Loader2 } from 'lucide-react'
+import { AlertCircle, Loader2 } from 'lucide-react'
 import { useState } from 'react'
 import { Button } from '../ui/button'
 import { Textarea } from '../ui/textarea'
@@ -14,20 +14,18 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { reportApiService } from '@/services/apiService'
 import useApiCall from '@/hooks/useApiCall'
 
-const ReportUserCard = ({ userId }) => {
+const ReportUserCard = ({ productId }) => {
   const [selectedReason, setSelectedReason] = useState('')
   const [description, setDescription] = useState('')
   const [submitMessage, setSubmitMessage] = useState('')
 
-  const [newUserReportApiCall, loading] = useApiCall(
-    reportApiService.createUserReport
+  const [newProductReportApiCall, loading] = useApiCall(
+    reportApiService.createProductReport
   )
 
   const reportReasons = [
-    'Harassment',
     'Inappropriate Content',
     'Spam',
-    'Impersonation',
     'Hate Speech',
     'Scam or Fraud',
     'Other',
@@ -45,13 +43,13 @@ const ReportUserCard = ({ userId }) => {
     }
 
     const report = {
-      reportedUser: userId,
-      reportType: 'user',
+      reportedProduct: productId,
+      reportType: 'product',
       reason: selectedReason,
       description,
     }
     try {
-      const response = await newUserReportApiCall(
+      const response = await newProductReportApiCall(
         'Report Submitted successfully!',
         report
       )
@@ -79,7 +77,7 @@ const ReportUserCard = ({ userId }) => {
   return (
     <div className="p-1">
       <h2 className="text-lg flex items-center font-bold mb-2">
-        Report User
+        Report Product
         <AlertCircle size={18} className="text-red-500 ml-2" />
       </h2>
       <div className="flex items-center">
@@ -113,9 +111,9 @@ const ReportUserCard = ({ userId }) => {
               placeholder="Give a brief description about the report"
               id="reportDescription"
               value={description}
-              onChange={(e) => {
+              onChange={(e) =>
                 setDescription(e.target.value) || setSubmitMessage('')
-              }}
+              }
               rows="4"
             ></Textarea>
           </Label>
@@ -157,17 +155,18 @@ const ReportUserCard = ({ userId }) => {
   )
 }
 
-export function ReportUser({ userId }) {
+export function ReportProduct({ productId }) {
   return (
     <Popover className="popup-item">
       <PopoverTrigger asChild>
-        <div className="cursor-pointer flex items-center">
-          <Flag size={16} className="mr-2" />
-          Report User
+        <div className="flex cursor-pointer">
+          <span className="font-semibold underline text-red-500">
+            Report this product
+          </span>
         </div>
       </PopoverTrigger>
       <PopoverContent className="w-80 popup-item">
-        <ReportUserCard userId={userId} />
+        <ReportUserCard productId={productId} />
       </PopoverContent>
     </Popover>
   )

@@ -13,6 +13,10 @@ const productRouter = require('./controllers/products')
 const adminProductsRouter = require('./controllers/admin/products')
 const offerRouter = require('./controllers/offers')
 const reviewRouter = require('./controllers/reviews')
+const reportRouter = require('./controllers/reports')
+const statsRouter = require('./controllers/admin/stats')
+const adminUsersRouter = require('./controllers/admin/users')
+const adminReportsRouter = require('./controllers/admin/reports')
 
 const app = express()
 
@@ -31,8 +35,12 @@ app.use('/api/login', loginRouter)
 app.use('/api/users', userRouter)
 app.use('/api/products', productRouter)
 app.use('/api/admin/products', adminProductsRouter)
+app.use('/api/admin/stats', statsRouter)
+app.use('/api/admin/users', adminUsersRouter)
+app.use('/api/admin/reports', adminReportsRouter)
 app.use('/api/products/offers', offerRouter)
 app.use('/api/reviews', reviewRouter)
+app.use('/api/reports', reportRouter)
 
 app.get('*', (req, res) => {
   res.status(404).json({ error: 'Not Found' })

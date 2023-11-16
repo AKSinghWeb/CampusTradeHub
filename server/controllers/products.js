@@ -4,6 +4,7 @@ const { bucket } = require('../config/firebase')
 const Product = require('../models/product')
 const userAuthMiddleware = require('../middlewares/userAuthMiddleware')
 const adminAuthMiddleware = require('../middlewares/adminAuthMiddleware')
+const Offer = require('../models/offer')
 const User = require('../models/user')
 
 productRouter.get('/', async (req, res) => {
@@ -11,7 +12,7 @@ productRouter.get('/', async (req, res) => {
 
   try {
     const products = await Product.find({ status: 'approved' }).sort({
-      createdAt: -1,
+      updatedAt: -1,
     })
 
     res.status(200).json(products)
@@ -48,7 +49,7 @@ productRouter.get('/search', async (req, res) => {
         },
         { status: 'approved' },
       ],
-    }).sort({ createdAt: -1 })
+    }).sort({ updatedAt: -1 })
 
     res.status(200).json(products)
   } catch (error) {
@@ -62,7 +63,7 @@ productRouter.get('/user', userAuthMiddleware, async (req, res) => {
   console.log(req.user._id)
   try {
     const products = await Product.find({ user: req.user._id }).sort({
-      createdAt: -1,
+      updatedAt: -1,
     })
 
     res.status(200).json(products)
@@ -98,7 +99,7 @@ productRouter.get('/category/:category', async (req, res) => {
     const products = await Product.find({
       category: { $regex: new RegExp(category, 'i') },
       status: 'approved',
-    }).sort({ createdAt: -1 })
+    }).sort({ updatedAt: -1 })
 
     if (!products) {
       return res
@@ -118,7 +119,7 @@ productRouter.get('/count/:limit', async (req, res) => {
   try {
     const products = await Product.find({ status: 'approved' })
       .limit(parseInt(limit, 10))
-      .sort({ createdAt: -1 })
+      .sort({ updatedAt: -1 })
 
     if (!products) {
       return res.status(404).json({ error: 'No products found' })
@@ -147,7 +148,7 @@ productRouter.post(
       const newProduct = new Product({
         title,
         description,
-        price,
+        price: category === 'Donations' ? 0 : price,
         category,
         location,
         user: req.user._id,
@@ -172,10 +173,7 @@ productRouter.post(
           // The public URL can be used to directly access the file.
           const publicUrl = fileUpload.publicUrl()
           newProduct.images = publicUrl // Save the image URL in the product document
-          const product = await newProduct.save() // Save the product with the image URL
-          await User.findByIdAndUpdate(req.user._id, {
-            $push: { products: product._id },
-          }) // Add the product to the user's products array
+          const product = await newProduct.save()
           res.status(200).json(product)
         })
 
@@ -183,9 +181,7 @@ productRouter.post(
       } else {
         // If no file is present, save the product without an image
         const product = await newProduct.save()
-        await User.findByIdAndUpdate(req.user._id, {
-          $push: { products: product._id },
-        })
+
         res.status(200).json(product)
       }
     } catch (error) {
@@ -221,7 +217,7 @@ productRouter.put(
 )
 
 productRouter.put(
-  '/status/:productId',
+  '/availability/:productId',
   userAuthMiddleware,
   async (req, res) => {
     const { productId } = req.params
@@ -246,52 +242,121 @@ productRouter.put(
   }
 )
 
-productRouter.put('/info/:productId', userAuthMiddleware, async (req, res) => {
-  const updatedInfo = req.body
+// Update Product
+productRouter.put(
+  '/:productId',
+  userAuthMiddleware,
+  upload.single('productImage'),
+  async (req, res) => {
+    const { productId } = req.params
+    const { title, description, price, category, location } = req.body
 
+    if (!title || !description || !price || !category || !location) {
+      return res
+        .status(400)
+        .json({ error: 'Missing required fields for product data' })
+    }
+
+    try {
+      const product = await Product.findById(productId)
+
+      if (!product) {
+        return res.status(404).json({ error: 'Product not found' })
+      }
+
+      if (product.user.toString() !== req.user._id.toString()) {
+        return res.status(401).json({ error: 'Forbidden.' })
+      }
+
+      product.title = title
+      product.description = description
+      product.category = category
+      product.price = product.category === 'Donations' ? 0 : price
+      product.location = location
+
+      if (req.file) {
+        const { file } = req
+        const fileName = `products-images/productImage-${product._id}`
+        const fileUpload = bucket.file(fileName)
+
+        const blobStream = fileUpload.createWriteStream({
+          metadata: {
+            contentType: file.mimetype,
+          },
+        })
+
+        blobStream.on('error', (error) => {
+          res.status(500).send(`Error uploading file: ${error.message}`)
+        })
+
+        blobStream.on('finish', async () => {
+          // The public URL can be used to directly access the file.
+          const publicUrl = fileUpload.publicUrl()
+          product.images = publicUrl // Save the image URL in the product document
+          product.status = 'pending'
+          await product.save() // Save the product with the image URL
+          await Offer.deleteMany({ productId }) // Delete all offers for the product
+          // delte the product from user products array
+          await User.findByIdAndUpdate(req.user._id, {
+            $pull: { products: productId },
+          })
+          res.status(200).json(product)
+        })
+
+        blobStream.end(file.buffer)
+      } else {
+        // If no file is present, save the product without an image
+        product.status = 'pending'
+        await product.save()
+        await Offer.deleteMany({ productId }) // Delete all offers for the product
+        // delte the product from user products array
+        await User.findByIdAndUpdate(req.user._id, {
+          $pull: { products: productId },
+        })
+        res.status(200).json(product)
+      }
+    } catch (error) {
+      return res.status(500).json({ message: 'Internal Server Error' })
+    }
+
+    return res.status(200)
+  }
+)
+
+productRouter.delete('/:productId', userAuthMiddleware, async (req, res) => {
   const { productId } = req.params
 
   try {
     const product = await Product.findById(productId)
 
     if (!product) {
-      return res.status(404).json({ message: 'Product not found.' })
+      return res.status(404).json({ error: 'Product not found' })
     }
 
+    if (req.user.role === 'admin') {
+      await Product.findByIdAndDelete(productId)
+
+      await Offer.deleteMany({ productId })
+
+      const filePath = `products-images/${product.images.split('%2F')[1]}`
+      await bucket.file(filePath).delete()
+
+      return res.status(200).json({ message: 'Product deleted successfully' })
+    }
     if (product.user.toString() === req.user._id.toString()) {
-      const updatedProduct = await Product.findByIdAndUpdate(
-        productId,
-        {
-          ...updatedInfo,
-        },
-        { new: true }
-      )
-      return res.status(200).json(updatedProduct)
+      await Product.findByIdAndDelete(productId)
+
+      await Offer.deleteMany({ productId })
+
+      const filePath = `products-images/${product.images.split('%2F')[1]}`
+      await bucket.file(filePath).delete()
+
+      return res.status(200).json({ message: 'Product deleted successfully' })
     }
     return res.status(401).json({ error: 'Forbidden.' })
   } catch (error) {
     return res.status(500).json({ message: 'Internal Server Error' })
   }
-})
-
-productRouter.delete('/:productId', userAuthMiddleware, async (req, res) => {
-  const { productId } = req.params
-
-  const product = await Product.findById(productId)
-
-  if (!product) {
-    return res.status(404).json({ error: 'Product not found' })
-  }
-
-  if (req.user.role === 'admin') {
-    await Product.findByIdAndDelete(productId)
-    return res.status(200).json({ message: 'product deleted successfully' })
-  }
-  if (product.user.toString() === req.user._id.toString()) {
-    await Product.findByIdAndDelete(productId)
-    return res.status(200).json({ message: 'product deleted successfully' })
-  }
-  return res.status(401).json({ error: 'Forbidden.' })
 })
 
 module.exports = productRouter

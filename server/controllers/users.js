@@ -131,4 +131,92 @@ userRouter.put(
   }
 )
 
+// Update Profile (User)
+userRouter.put('/my-profile', userAuthMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id)
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found.' })
+    }
+
+    const { name, email, bio, contactInfo, location } = req.body
+
+    user.name = name || user.name
+    user.email = email || user.email
+    user.bio = bio || user.bio
+    user.contactInfo = contactInfo || user.contactInfo
+    user.location = location || user.location
+
+    const updatedUser = await user.save()
+
+    res.status(200).json(updatedUser)
+  } catch (err) {
+    console.error('Error updating profile:', err.message)
+    res.status(500).json({ error: 'Internal Server Error' })
+  }
+})
+
+// Update Username (User)
+userRouter.put('/username', userAuthMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id)
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found.' })
+    }
+
+    const { username } = req.body
+
+    if (username === user.username) {
+      return res.status(400).json({ error: 'Username same as before.' })
+    }
+
+    const existingUser = await User.find({ username })
+
+    if (existingUser.length > 0) {
+      return res.status(400).json({ error: 'Username already exists.' })
+    }
+
+    user.username = username || user.username
+
+    const updatedUser = await user.save()
+
+    res.status(200).json(updatedUser)
+  } catch (err) {
+    console.error('Error updating username:', err.message)
+    res.status(500).json({ error: 'Internal Server Error' })
+  }
+})
+
+// Update Password (User)
+userRouter.put('/password', userAuthMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id)
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found.' })
+    }
+
+    const { password, newPassword } = req.body
+
+    const isPasswordCorrect = await bcrypt.compare(password, user.passwordHash)
+
+    if (!isPasswordCorrect) {
+      return res.status(400).json({ error: 'Incorrect old password.' })
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword, 10)
+
+    user.passwordHash = passwordHash
+
+    const updatedUser = await user.save()
+
+    res.status(200).json(updatedUser)
+  } catch (err) {
+    console.error('Error updating password:', err.message)
+    res.status(500).json({ error: 'Internal Server Error' })
+  }
+})
+
 module.exports = userRouter

@@ -11,14 +11,15 @@ import { useEffect, useState } from 'react'
 import { adminApiService } from '@/services/apiService'
 import { Link } from 'react-router-dom'
 import { Badge } from '../ui/badge'
+import { AdminProductDelete } from '../Alerts/AdminProductDelete'
 
-const ProductApprovalList = () => {
+const AllProducts = () => {
   const [products, setProducts] = useState([])
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await adminApiService.getPendingProducts()
+        const response = await adminApiService.getAllProducts()
         const data = response.data
         setProducts(data)
       } catch (error) {
@@ -31,31 +32,14 @@ const ProductApprovalList = () => {
     fetchData()
   }, [])
 
-  const handleApprove = async (productId) => {
+  const handleDelete = (productId) => {
     try {
-      // Call your API service to approve the product
-      await adminApiService.approveProduct(productId)
-      // Update the local state or refetch data
-      const updatedProducts = products.map((product) =>
-        product.id === productId ? { ...product, status: 'approved' } : product
+      const updatedProducts = products.filter(
+        (product) => product.id !== productId
       )
       setProducts(updatedProducts)
     } catch (error) {
       console.error('Error approving product:', error)
-    }
-  }
-
-  const handleReject = async (productId) => {
-    try {
-      // Call your API service to reject the product
-      await adminApiService.rejectProduct(productId)
-      // Update the local state or refetch data
-      const updatedProducts = products.map((product) =>
-        product.id === productId ? { ...product, status: 'rejected' } : product
-      )
-      setProducts(updatedProducts)
-    } catch (error) {
-      console.error('Error rejecting product:', error)
     }
   }
 
@@ -106,14 +90,32 @@ const ProductApprovalList = () => {
                 {product.price}
               </TableCell>
               <TableCell className="px-6 py-4 whitespace-nowrap">
-                {product.user.username}
+                {product.user ? product.user.username : 'Anonymous'}
               </TableCell>
               <TableCell className="px-6 py-4 whitespace-nowrap">
                 {new Date(product.createdAt).toLocaleDateString()}
               </TableCell>
               <TableCell className="px-6 py-4 whitespace-nowrap">
-                {product.status === 'pending' && (
-                  <Badge className="bg-yellow-600">Pending</Badge>
+                {product.status === 'approved' ? (
+                  <Badge className="bg-green-600 text-white">
+                    {' '}
+                    {product.status}
+                  </Badge>
+                ) : product.status === 'pending' ? (
+                  <Badge className="bg-yellow-600 text-white">
+                    {' '}
+                    {product.status}
+                  </Badge>
+                ) : product.status === 'sold' ? (
+                  <Badge className="bg-blue-600 text-white">
+                    {' '}
+                    {product.status}
+                  </Badge>
+                ) : (
+                  <Badge className="bg-red-600 text-white">
+                    {' '}
+                    {product.status}
+                  </Badge>
                 )}
               </TableCell>
               <TableCell className="px-6 py-4 flex items-center justify-center whitespace-nowrap">
@@ -123,22 +125,10 @@ const ProductApprovalList = () => {
                       <span className="">View</span>
                     </Button>
                   </Link>
-                  {product.status === 'pending' && (
-                    <>
-                      <Button
-                        onClick={() => handleApprove(product.id)}
-                        className="bg-green-500 hover:bg-green-600 text-center text-white w-24 px-4 py-2 transition-all duration-300  "
-                      >
-                        <span className="">Approve</span>
-                      </Button>
-                      <Button
-                        onClick={() => handleReject(product.id)}
-                        className="bg-red-500 hover:bg-red-600 text-center text-white w-24 px-4 py-2 transition-all duration-300 "
-                      >
-                        <span className="">Reject</span>
-                      </Button>
-                    </>
-                  )}
+                  <AdminProductDelete
+                    handleDelete={handleDelete}
+                    productId={product.id}
+                  />
                 </div>
               </TableCell>
             </TableRow>
@@ -149,4 +139,4 @@ const ProductApprovalList = () => {
   )
 }
 
-export default ProductApprovalList
+export default AllProducts

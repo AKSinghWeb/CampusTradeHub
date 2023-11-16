@@ -1,6 +1,6 @@
 // import { Facebook, Instagram, Twitter } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { Github, Twitter, Instagram, Facebook } from 'lucide-react'
+import { Twitter, Instagram, Facebook } from 'lucide-react'
 import logo from '../../assets/logo.svg'
 const Footer = () => {
   return (
@@ -21,13 +21,6 @@ const Footer = () => {
         </div>
         <div className="flex items-center space-x-4 mt-4 md:mt-0 mx-auto md:mx-0">
           <div className="flex items-center space-x-4">
-            <a
-              href="https://github.com/yourgithub"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Github className="h-8 w-8 hover:text-primary" />
-            </a>
             <a
               href="https://twitter.com/yourtwitter"
               target="_blank"

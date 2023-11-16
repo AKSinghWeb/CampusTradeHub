@@ -2,25 +2,25 @@
 import {
   Sheet,
   SheetClose,
-  // SheetClose,
   SheetContent,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import { Menu } from 'lucide-react'
 import ProfileButton from '../ui/ProfileButton'
 import Container from '../ui/Container'
 import { Link } from 'react-router-dom'
 import ThemeToggler from '../ThemeToggle'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import logo from '../../assets/logo.svg'
 import { useAuth } from '@/context/UserAuthContext'
 import { LoginDialog } from '../LoginSignup/LoginDialog'
 import { Button } from '../ui/button'
-import { Menu } from 'lucide-react'
 
 const Header = () => {
   const [prevScrollPos, setPrevScrollPos] = useState(0)
   const [visible, setVisible] = useState(true)
   const { state } = useAuth()
+  const headerRef = useRef(null)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -37,7 +37,8 @@ const Header = () => {
   return (
     <Container>
       <header
-        className={`fixed top-0 z-50 w-full dark:bg-gray-900 bg-opacity-90 shadow-lg backdrop-filter backdrop-blur-md py-3 px-4 lg:px-12 border-b transition-all duration-300 ease-in-out ${
+        ref={headerRef}
+        className={`fixed top-0 z-50 w-full dark:bg-slate-900 bg-opacity-90 shadow-lg backdrop-filter backdrop-blur-md py-3 px-4 lg:px-8 border-b transition-all duration-300 ease-in-out ${
           visible ? '' : 'opacity-0 transform translate-y-[-100%]'
         }`}
       >
@@ -51,24 +52,31 @@ const Header = () => {
                 <nav className="flex py-6 flex-col gap-4">
                   <div>
                     <Link
-                      to={'/products'}
+                      to={'/admin/approval'}
                       className="block px-2 py-1 font-semibold text-lg"
                     >
-                      <SheetClose>Products</SheetClose>
-                    </Link>
-                  </div>
-
-                  <div>
-                    <Link
-                      to={'/users'}
-                      className="block px-2 py-1 font-semibold text-lg"
-                    >
-                      <SheetClose>Users</SheetClose>
+                      <SheetClose>Pending Requests</SheetClose>
                     </Link>
                   </div>
                   <div>
                     <Link
-                      to={'/reports'}
+                      to={'/admin/products'}
+                      className="block px-2 py-1 font-semibold text-lg"
+                    >
+                      <SheetClose>All Products</SheetClose>
+                    </Link>
+                  </div>
+                  <div>
+                    <Link
+                      to={'/admin/users'}
+                      className="block px-2 py-1 font-semibold text-lg"
+                    >
+                      <SheetClose>All Users</SheetClose>
+                    </Link>
+                  </div>
+                  <div>
+                    <Link
+                      to={'/admin/reports'}
                       className="block px-2 py-1 font-semibold text-lg"
                     >
                       <SheetClose>Reports</SheetClose>
@@ -88,7 +96,7 @@ const Header = () => {
             </div>
             <h1 className="text-xl hidden lg:block font-bold">
               <Link to={'/'} className="ml-4 lg:ml-0">
-                CampusTradeHub Admin
+                CampusTradeHub
               </Link>
             </h1>
             <nav className="mx-6 items-center space-x-4 lg:space-x-6 hidden md:flex">
@@ -99,25 +107,10 @@ const Header = () => {
                   className="text-md  hover:bg-gray-100 dark:hover:bg-gray-800"
                 >
                   <Link
-                    to={'/products'}
-                    className="text-sm font-medium transition-colors hover:text-primary"
+                    to={'/admin/approval'}
+                    className="text-sm font-medium transition-colors "
                   >
-                    Products
-                  </Link>
-                </Button>
-              </div>
-
-              <div>
-                <Button
-                  asChild
-                  variant="ghost"
-                  className="text-md  hover:bg-gray-100 dark:hover:bg-gray-800"
-                >
-                  <Link
-                    to={'/users'}
-                    className="text-sm font-medium transition-colors hover:text-primary"
-                  >
-                    Users
+                    Pending Requests
                   </Link>
                 </Button>
               </div>
@@ -128,8 +121,36 @@ const Header = () => {
                   className="text-md  hover:bg-gray-100 dark:hover:bg-gray-800"
                 >
                   <Link
-                    to={'/reports'}
-                    className="text-sm font-medium transition-colors hover:text-primary"
+                    to={'/admin/products'}
+                    className="text-sm font-medium transition-colors "
+                  >
+                    All Products
+                  </Link>
+                </Button>
+              </div>
+              <div>
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="text-md  hover:bg-gray-100 dark:hover:bg-gray-800"
+                >
+                  <Link
+                    to={'/admin/users'}
+                    className="text-sm font-medium transition-colors "
+                  >
+                    All Users
+                  </Link>
+                </Button>
+              </div>
+              <div>
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="text-md  hover:bg-gray-100 dark:hover:bg-gray-800"
+                >
+                  <Link
+                    to={'/admin/reports'}
+                    className="text-sm font-medium transition-colors "
                   >
                     Reports
                   </Link>

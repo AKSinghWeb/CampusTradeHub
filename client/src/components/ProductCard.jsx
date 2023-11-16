@@ -1,7 +1,3 @@
-// ProductCard.js
-// import { Book, Monitor, Coffee, ShoppingCart } from 'lucide-react'
-// import { Button } from './ui/button'
-
 import {
   Monitor,
   ShoppingCart,
@@ -60,7 +56,11 @@ const ProductCard = ({ product, user = false }) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <p className="text-2xl text-blue-500 font-bold">
-              &#x20B9; {product.price}
+              {product.price === 0 ? (
+                <span>Free</span>
+              ) : (
+                <span>&#x20B9; {product.price}</span>
+              )}
             </p>
           </div>
           {user && (

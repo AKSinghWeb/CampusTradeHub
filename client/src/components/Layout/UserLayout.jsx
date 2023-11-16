@@ -8,7 +8,6 @@ import ProductPage from '../../pages/ProductPage'
 import AdminPage from '../../pages/AdminHome'
 import ProductForm from '@/pages/NewProduct'
 import ProductList from '@/pages/ProductList'
-// import UserProfileManagement from '@/components/UserProfileManagement'
 import NotFound from './NotFound'
 import UploadSuccess from '../UploadSuccess'
 import ScrollToTop from '../ScrollToTop'
@@ -16,6 +15,7 @@ import SalesInbox from '@/pages/SalesInbox'
 import EditProductForm from '@/pages/EditProduct'
 import UserProfile from '@/pages/UserProfile'
 import MyUserProfile from '../../pages/MyUserProfile'
+import UpdateSuccess from '../updateSuccess'
 
 const UserLayout = () => {
   return (
@@ -45,6 +45,7 @@ const UserLayout = () => {
             element={<EditProductForm />}
           />
           <Route path="/new-product-success" element={<UploadSuccess />} />
+          <Route path="/edit-product-success" element={<UpdateSuccess />} />
 
           <Route path="/sales-inbox" element={<SalesInbox />} />
         </Routes>

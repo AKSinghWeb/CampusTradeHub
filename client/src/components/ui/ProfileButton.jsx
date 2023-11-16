@@ -64,6 +64,11 @@ const ProfileButton = () => {
               Settings
             </DropdownMenuItem>
           </Link>
+          <Link to="/user/reviewsAndRatings">
+            <DropdownMenuItem className="cursor-pointer">
+              Reviews & Ratings
+            </DropdownMenuItem>
+          </Link>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="p-1">
             <Button className="h-7 w-full text-xs" onClick={handleLogout}>

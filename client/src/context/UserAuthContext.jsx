@@ -54,7 +54,10 @@ export const AuthProvider = ({ children }) => {
           dispatch({ type: 'LOGIN', payload: { ...userProfile } })
         }
       } catch (error) {
-        // Handle error fetching user profile
+        if (error.toString().includes('Invalid token')) {
+          dispatch({ type: 'LOGOUT' })
+        }
+        
         console.error('Error fetching user profile:', error)
       }
     }

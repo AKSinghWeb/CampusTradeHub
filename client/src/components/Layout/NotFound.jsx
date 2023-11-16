@@ -6,7 +6,7 @@ import { Button } from '../ui/button'
 
 const NotFound = () => {
   return (
-    <div className="flex flex-col pb-16 items-center justify-center h-screen">
+    <div className="flex flex-col pb-24 items-center justify-center h-screen">
       <img
         src={NotFoundImage}
         alt="Not Found"

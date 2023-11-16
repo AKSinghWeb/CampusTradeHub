@@ -3,14 +3,34 @@ const express = require('express')
 const adminProductsRouter = express.Router()
 const Product = require('../../models/product')
 const adminAuthMiddleware = require('../../middlewares/adminAuthMiddleware')
+const { bucket } = require('../../config/firebase')
+const User = require('../../models/user')
+// GET all listings
+adminProductsRouter.get('/all', adminAuthMiddleware, async (req, res) => {
+  try {
+    const products = await Product.find({})
+      .populate({ path: 'user', select: 'name username email' })
+      .sort({
+        updatedAt: -1,
+      })
+
+    if (!products) {
+      return res.status(404).json({ message: 'No Products not found' })
+    }
+
+    res.status(200).json(products)
+  } catch (error) {
+    return res.status(500).json({ message: 'Internal Server Error' })
+  }
+})
 
 // GET all pending listings for admin review
 adminProductsRouter.get('/', adminAuthMiddleware, async (req, res) => {
   try {
     const products = await Product.find({ status: 'pending' })
-      .populate({ path: 'user', select: 'name email' })
+      .populate({ path: 'user', select: 'name username email' })
       .sort({
-        createdAt: -1,
+        updatedAt: -1,
       })
 
     if (!products) {
@@ -38,6 +58,9 @@ adminProductsRouter.put(
 
       product.status = 'approved'
       await product.save()
+      await User.findByIdAndUpdate(product.user, {
+        $push: { products: product._id },
+      })
 
       res.status(200).json(product)
     } catch (error) {
@@ -107,6 +130,9 @@ adminProductsRouter.delete(
       }
 
       await Product.findByIdAndDelete(productId)
+
+      const filePath = `products-images/${product.images.split('%2F')[1]}`
+      await bucket.file(filePath).delete()
       res.status(200).json({ message: 'Product deleted successfully' })
     } catch (error) {
       return res.status(500).json({ message: 'Internal Server Error' })

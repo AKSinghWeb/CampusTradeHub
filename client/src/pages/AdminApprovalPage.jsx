@@ -4,15 +4,15 @@ import ProductApprovalList from '@/components/ProductApprovalTable/ProductApprov
 
 // import ProductApprovalList from "@/components/ProductApprovalList";
 
-const AdminProductsPage = () => {
+const AdminApprovalPage = () => {
   // Sample product data
 
   return (
     <div className="min-h-screen">
-      <h2 className="text-xl m-32 font-semibold mb-4">Product Approval List</h2>
+      <h2 className="text-xl m-12 font-semibold mb-4">Product Approval List</h2>
       <ProductApprovalList />
     </div>
   )
 }
 
-export default AdminProductsPage
+export default AdminApprovalPage

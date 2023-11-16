@@ -26,7 +26,6 @@ const adminAuthMiddleware = async (req, res, next) => {
 
     if (user.role === 'admin') {
       req.user = user
-      console.log('user', req.user)
       next()
     } else {
       return res.status(403).json({ error: 'Access denied' })

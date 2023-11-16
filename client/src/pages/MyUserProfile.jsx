@@ -5,13 +5,14 @@ import UserInfo from '../components/UserProfile/UserInfo'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import UserListings from '../components/UserProfile/UserListings'
 import { useParams } from 'react-router-dom'
-import ReviewCard from '../components/UserProfile/ReviewCard'
+import MyReviews from '../components/UserProfile/MyReviews'
 
 const MyUserProfile = () => {
   const { tab } = useParams()
 
   const handleTabListClick = (value) => {
-    console.log(value)
+    const url = `/user/${value}`
+    window.history.pushState({}, '', url)
   }
 
   return (
@@ -23,7 +24,7 @@ const MyUserProfile = () => {
       <div className="flex flex-col lg:flex-row min-h-screen ">
         {/* Left side with tabs */}
         <div className="lg:w-1/6 lg:border flex max-md:justify-center">
-          <TabsList className="h-fit mx-4 bg-transparent lg:w-full flex justify-stretch lg:flex-col mt-8 max-md:my-6">
+          <TabsList className="h-fit mx-4 bg-transparent lg:w-full flex justify-stretch overflow-x-auto lg:flex-col mt-8 max-md:my-6">
             <TabsTrigger
               key={1}
               value="profile"
@@ -77,7 +78,7 @@ const MyUserProfile = () => {
             <UserListings />
           </TabsContent>
           <TabsContent className="" value="reviewsAndRatings" key={4}>
-            <ReviewCard />
+            <MyReviews />
           </TabsContent>
         </div>
       </div>

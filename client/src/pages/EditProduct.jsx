@@ -9,7 +9,17 @@ import useApiCall from '@/hooks/useApiCall'
 import useAuthorization from '@/hooks/useAuthorization'
 import { productApiService } from '@/services/apiService'
 import { getAuthToken } from '@/utils/authFunctions'
-import axios from 'axios'
+
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 import {
   PackagePlus,
@@ -38,7 +48,7 @@ const EditProductForm = () => {
       try {
         const response = await productApiService.getProduct(productId)
         const data = response.data
-        setProduct(data)
+        setProduct({ ...data, category: '' })
         setImage(data.images)
       } catch (error) {
         console.error('Error fetching data:', error)
@@ -50,8 +60,8 @@ const EditProductForm = () => {
     fetchData() // No dependencies here
   }, [productId])
 
-  const [newProductApiCall, loading] = useApiCall(
-    productApiService.createProduct
+  const [updateProductApiCall, loading] = useApiCall(
+    productApiService.updateProduct
   )
 
   const [product, setProduct] = useState({
@@ -59,6 +69,7 @@ const EditProductForm = () => {
     description: '',
     price: '',
     category: '',
+    otherCategory: '',
     location: '',
   })
   const [productErrors, setFormErrors] = useState({
@@ -66,6 +77,7 @@ const EditProductForm = () => {
     description: '',
     price: '',
     category: '',
+    otherCategory: '',
     location: '',
   })
 
@@ -82,6 +94,12 @@ const EditProductForm = () => {
     const { name, value } = e.target
     setProduct((prevProduct) => ({ ...prevProduct, [name]: value }))
     setFormErrors((prev) => ({ ...prev, [name]: '' }))
+  }
+
+  const handleCategoryChange = (e) => {
+    const value = e
+    setProduct((prevProduct) => ({ ...prevProduct, category: value }))
+    setFormErrors((prev) => ({ ...prev, category: '' }))
   }
 
   const validateForm = () => {
@@ -104,6 +122,16 @@ const EditProductForm = () => {
     } else if (product.category.length < 3) {
       errors.category = 'Category must be at least 3 characters long'
     }
+
+    if (product.category === 'Other' && !product.otherCategory) {
+      errors.otherCategory = 'Other Category is required'
+    } else if (
+      product.category === 'Other' &&
+      product.otherCategory.length < 3
+    ) {
+      errors.otherCategory = 'Other Category must be at least 3 characters long'
+    }
+
     if (!product.location) {
       errors.location = 'Location is required'
     } else if (product.location.length < 3) {
@@ -125,7 +153,10 @@ const EditProductForm = () => {
     postData.append('title', product.title)
     postData.append('description', product.description)
     postData.append('price', product.price)
-    postData.append('category', product.category)
+    postData.append(
+      'category',
+      product.category === 'Other' ? product.otherCategory : product.category
+    )
     postData.append('location', product.location)
     {
       image instanceof Blob
@@ -134,25 +165,20 @@ const EditProductForm = () => {
     }
 
     try {
-      // const response = await newProductApiCall(
-      //   'Product uploaded successfully!',
-      //   getAuthToken(),
-      //   postData
-      // )
-      // navigate('/new-product-success')
-      // console.log(response)
-
-      // print form data
-      for (var pair of postData.entries()) {
-        console.log(pair)
-      }
+      const response = await updateProductApiCall(
+        'Product updated successfully!',
+        productId,
+        postData
+      )
+      console.log(response)
+      navigate('/edit-product-success')
     } catch (error) {
       console.error('Product add failed', error)
     }
   }
 
   return (
-    <div className="min-h-screen  flex px-4 lg:px-12 lg:pb-40 items-center justify-center">
+    <div className="min-h-screen pt-12  flex px-4 lg:px-12 lg:pb-40 items-center justify-center">
       <form
         onSubmit={handleSubmit}
         className="w-full xl:w-2/3 max-md:p-4 p-8 dark:bg-slate-900 flex flex-col gap-4 border rounded-md shadow-md "
@@ -160,7 +186,7 @@ const EditProductForm = () => {
         <h1 className="flex items-center justify-center text-center font-bold text-3xl">
           {' '}
           <PackagePlus size={30} className="text-[#A97835] mr-2" /> Edit Your
-          Used Product
+          Product
         </h1>
         <div className="flex flex-col-reverse max-md:p-4 p-8 gap-8 lg:flex-row dark:bg-slate-900 border rounded-md ">
           {/* Image Upload Section */}
@@ -228,6 +254,78 @@ const EditProductForm = () => {
                 </p>
               )}
             </div>
+            <div className="flex-1">
+              <Label htmlFor="description">Description</Label>
+              <div className="relative flex items-center">
+                <Textarea
+                  id="description"
+                  name="description"
+                  value={product.description}
+                  onChange={handleInputChange}
+                  placeholder="Enter the product description"
+                  rows="3"
+                  className="p-2 pr-6"
+                />
+                <span className="absolute right-1 top-2">
+                  <FileText size={18} className="text-gray-400" />
+                </span>
+              </div>
+              {productErrors.description && (
+                <p className="text-red-500 ml-2 font-semibold text-sm">
+                  {productErrors.description}
+                </p>
+              )}
+            </div>
+            <div className="flex-1">
+              <Label htmlFor="category">Category</Label>
+              <div className="relative flex items-center">
+                <Select
+                  id="category"
+                  name="category"
+                  onValueChange={handleCategoryChange}
+                >
+                  <SelectTrigger id="category" className="">
+                    <SelectValue placeholder="Select a Category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Category</SelectLabel>
+                      {suggestions.map((fruit, index) => (
+                        <SelectItem key={index} value={fruit}>
+                          {fruit}
+                        </SelectItem>
+                      ))}
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+              {productErrors.category && (
+                <p className="text-red-500 ml-2 font-semibold text-sm">
+                  {productErrors.category}
+                </p>
+              )}
+            </div>
+            {product.category === 'Other' && (
+              <div className="flex-1">
+                <div className="relative flex items-center">
+                  <Input
+                    type="text"
+                    id="otherCategory"
+                    name="otherCategory"
+                    value={product.otherCategory}
+                    onChange={handleInputChange}
+                    placeholder="Enter the product category"
+                    className="p-2 pr-6 "
+                  />
+                </div>
+                {productErrors.otherCategory && (
+                  <p className="text-red-500 ml-2 font-semibold text-sm">
+                    {productErrors.otherCategory}
+                  </p>
+                )}
+              </div>
+            )}
             <div className="flex flex-col lg:flex-row gap-4">
               <div className="flex-1">
                 <Label htmlFor="price">Price (₹)</Label>
@@ -236,7 +334,8 @@ const EditProductForm = () => {
                     type="number"
                     id="price"
                     name="price"
-                    value={product.price}
+                    disabled={product.category === 'Donations'}
+                    value={product.category === 'Donations' ? 0 : product.price}
                     onChange={handleInputChange}
                     placeholder="Enter the product price"
                     className="p-2 pr-6"
@@ -251,57 +350,29 @@ const EditProductForm = () => {
                   </p>
                 )}
               </div>
+
               <div className="flex-1">
-                <Label htmlFor="category">Category</Label>
+                <Label htmlFor="location">Location</Label>
                 <div className="relative flex items-center">
                   <Input
                     type="text"
-                    id="category"
-                    name="category"
-                    value={product.category}
-                    list="fruitSuggestions"
+                    id="location"
+                    name="location"
+                    value={product.location}
                     onChange={handleInputChange}
-                    placeholder="Enter the product category"
-                    className="p-2 pr-6 "
+                    placeholder="Enter the product location"
+                    className="p-2"
                   />
-                  <span className="absolute right-1">
-                    <List size={18} className="text-gray-400" />
+                  <span className="absolute right-2">
+                    <Map size={18} className="text-gray-400" />
                   </span>
-
-                  <datalist id="fruitSuggestions">
-                    {suggestions.map((fruit, index) => (
-                      <option key={index} value={fruit} />
-                    ))}
-                  </datalist>
                 </div>
-                {productErrors.category && (
+                {productErrors.location && (
                   <p className="text-red-500 ml-2 font-semibold text-sm">
-                    {productErrors.category}
+                    {productErrors.location}
                   </p>
                 )}
               </div>
-            </div>
-            <div className="flex-1">
-              <Label htmlFor="location">Location</Label>
-              <div className="relative flex items-center">
-                <Input
-                  type="text"
-                  id="location"
-                  name="location"
-                  value={product.location}
-                  onChange={handleInputChange}
-                  placeholder="Enter the product location"
-                  className="p-2"
-                />
-                <span className="absolute right-2">
-                  <Map size={18} className="text-gray-400" />
-                </span>
-              </div>
-              {productErrors.location && (
-                <p className="text-red-500 ml-2 font-semibold text-sm">
-                  {productErrors.location}
-                </p>
-              )}
             </div>
           </div>
         </div>
@@ -324,7 +395,7 @@ const EditProductForm = () => {
             ) : (
               <div className="flex">
                 <Upload size={20} className="mr-2" />
-                Post Item
+                Update Product
               </div>
             )}
           </Button>

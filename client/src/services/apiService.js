@@ -5,6 +5,7 @@ import axios from 'axios'
 // const apiUrl = 'http://192.168.245.230:3000'
 const apiUrl = 'http://172.17.22.212:3000'
 // const apiUrl = 'http://192.168.1.41:3000'
+// const apiUrl = 'http://192.168.1.20:3000'
 // const apiUrl = 'http://localhost:3000'
 
 export const userApiService = {
@@ -48,6 +49,43 @@ export const userApiService = {
       handleApiError(error)
     }
   },
+  updateProfile: async (data) => {
+    try {
+      const response = await axios.put(`${apiUrl}/api/users/my-profile`, data, {
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+      })
+      return response.data
+    } catch (error) {
+      handleApiError(error)
+    }
+  },
+  updateUsername: async (data) => {
+    try {
+      const response = await axios.put(`${apiUrl}/api/users/username`, data, {
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+      })
+      return response.data
+    } catch (error) {
+      handleApiError(error)
+    }
+  },
+
+  updatePassword: async (data) => {
+    try {
+      const response = await axios.put(`${apiUrl}/api/users/password`, data, {
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+      })
+      return response.data
+    } catch (error) {
+      handleApiError(error)
+    }
+  },
 }
 
 export const productApiService = {
@@ -64,6 +102,50 @@ export const productApiService = {
       handleApiError(error)
     }
   },
+  updateProduct: async (id, data) => {
+    try {
+      const response = await axios.put(`${apiUrl}/api/products/${id}`, data, {
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+      })
+
+      return response.data
+    } catch (error) {
+      handleApiError(error)
+    }
+  },
+  updateProductAvailability: async (id, data) => {
+    try {
+      const response = await axios.put(
+        `${apiUrl}/api/products/availability/${id}`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${getAuthToken()}`,
+          },
+        }
+      )
+
+      return response.data
+    } catch (error) {
+      handleApiError(error)
+    }
+  },
+  deleteProduct: async (id) => {
+    try {
+      const response = await axios.delete(`${apiUrl}/api/products/${id}`, {
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+      })
+
+      return response.data
+    } catch (error) {
+      handleApiError(error)
+    }
+  },
+
   getProducts: (category) => {
     if (category === 'all') {
       return axios.get(`${apiUrl}/api/products`)
@@ -116,6 +198,51 @@ export const authApiService = {
 }
 
 export const adminApiService = {
+  getStats: async () => {
+    try {
+      return axios.get(`${apiUrl}/api/admin/stats`, {
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+      })
+    } catch (error) {
+      handleApiError(error)
+    }
+  },
+  getAllUsers: async () => {
+    try {
+      return axios.get(`${apiUrl}/api/admin/users`, {
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+      })
+    } catch (error) {
+      handleApiError(error)
+    }
+  },
+  deleteUser: async (id) => {
+    try {
+      return axios.delete(`${apiUrl}/api/admin/users/${id}`, {
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+      })
+    } catch (error) {
+      handleApiError(error)
+    }
+  },
+
+  getAllProducts: async () => {
+    try {
+      return axios.get(`${apiUrl}/api/admin/products/all`, {
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+      })
+    } catch (error) {
+      handleApiError(error)
+    }
+  },
   getPendingProducts: async () => {
     try {
       return axios.get(`${apiUrl}/api/admin/products`, {
@@ -165,6 +292,29 @@ export const adminApiService = {
         }
       )
     } catch (error) {
+      handleApiError(error)
+    }
+  },
+  deleteProduct: async (id) => {
+    try {
+      return axios.delete(`${apiUrl}/api/admin/products/${id}`, {
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+      })
+    } catch (error) {
+      handleApiError(error)
+    }
+  },
+  getAllReports: async () => {
+    try {
+      return axios.get(`${apiUrl}/api/admin/reports`, {
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+      })
+    } catch (error) {
+      console.log(error)
       handleApiError(error)
     }
   },
@@ -242,6 +392,61 @@ export const reviewsApiService = {
   getReviews: async (id) => {
     try {
       const response = await axios.get(`${apiUrl}/api/reviews/${id}`, {
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+      })
+
+      return response.data
+    } catch (error) {
+      handleApiError(error)
+    }
+  },
+  getMyReviews: async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/api/reviews/my-reviews`, {
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+      })
+
+      return response.data
+    } catch (error) {
+      handleApiError(error)
+    }
+  },
+  deleteReview: async (id) => {
+    try {
+      const response = await axios.delete(`${apiUrl}/api/reviews/${id}`, {
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+      })
+
+      return response.data
+    } catch (error) {
+      handleApiError(error)
+    }
+  },
+}
+
+export const reportApiService = {
+  createProductReport: async (data) => {
+    try {
+      const response = await axios.post(`${apiUrl}/api/reports/product`, data, {
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+      })
+
+      return response.data
+    } catch (error) {
+      handleApiError(error)
+    }
+  },
+  createUserReport: async (data) => {
+    try {
+      const response = await axios.post(`${apiUrl}/api/reports/user`, data, {
         headers: {
           Authorization: `Bearer ${getAuthToken()}`,
         },

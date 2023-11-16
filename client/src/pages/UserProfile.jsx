@@ -62,7 +62,7 @@ const UserCard = ({ user }) => {
               variant="outline"
               className="flex py-2 bg-red-600 hover:bg-red-700 hover:text-white text-white rounded"
             >
-              <ReportUser />
+              <ReportUser userId={user.id} />
             </Button>
           </div>
         </div>
@@ -75,7 +75,7 @@ const UserCard = ({ user }) => {
           variant="outline"
           className="flex py-2 bg-red-600 hover:bg-red-700 hover:text-white text-white rounded"
         >
-          <ReportUser />
+          <ReportUser userId={user.id} />
         </Button>
       </div>
     </div>

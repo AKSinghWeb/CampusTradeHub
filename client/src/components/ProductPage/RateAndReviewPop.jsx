@@ -87,7 +87,7 @@ const RateAndReviewCard = ({ userId }) => {
         placeholder="Write your review for the user (max 400 characters)"
         rows="4"
         value={reviewText}
-        onChange={(e) => setReviewText(e.target.value)}
+        onChange={(e) => setReviewText(e.target.value) || setSubmitMessage('')}
       ></Textarea>
       {submitMessage && (
         <p className="mt-2 font-semibold text-xs text-red-500">
