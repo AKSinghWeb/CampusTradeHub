@@ -11,7 +11,9 @@ const ProfileHeader = () => {
   useAuthorization()
   const { state, dispatch } = useAuth()
   const [selectedPicture, setSelectedPicture] = useState(
-    state.user && state.user.profilePicture ? state.user.profilePicture : null
+    state.user && state.user.profilePicture
+      ? state.user.profilePicture
+      : 'https://placehold.co/300'
   )
 
   useEffect(() => {
@@ -65,7 +67,7 @@ const ProfileHeader = () => {
           </h2>
         </div>
         <div className="flex mx-auto my-8 items-center">
-          {state.isLoggedIn && state.user.profilePicture && (
+          {state.isLoggedIn && (
             <img
               src={
                 selectedPicture instanceof Blob
