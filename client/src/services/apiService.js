@@ -318,6 +318,30 @@ export const adminApiService = {
       handleApiError(error)
     }
   },
+  getAllFeedbacks: async () => {
+    try {
+      return axios.get(`${apiUrl}/api/admin/feedbacks`, {
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+      })
+    } catch (error) {
+      console.log(error)
+      handleApiError(error)
+    }
+  },
+  deleteFeedback: async (id) => {
+    try {
+      return axios.delete(`${apiUrl}/api/admin/feedbacks/${id}`, {
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+      })
+    } catch (error) {
+      console.log(error)
+      handleApiError(error)
+    }
+  },
 }
 
 export const offersApiService = {
@@ -454,6 +478,19 @@ export const reportApiService = {
 
       return response.data
     } catch (error) {
+      handleApiError(error)
+    }
+  },
+}
+
+export const feedbackApiService = {
+  createFeedback: async (data) => {
+    try {
+      const response = await axios.post(`${apiUrl}/api/feedbacks`, data)
+
+      return response.data
+    } catch (error) {
+      console.log(error)
       handleApiError(error)
     }
   },

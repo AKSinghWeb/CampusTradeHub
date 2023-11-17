@@ -84,7 +84,7 @@ const UserCard = ({ user }) => {
 
 const ReviewCard = ({ review }) => {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex w-full flex-col gap-4">
       <div className="flex items-center mb-2 space-x-4">
         <img
           className="w-10 h-10 rounded-full"
@@ -109,6 +109,8 @@ const ReviewCard = ({ review }) => {
       <p className="mb-2 text-gray-500 dark:text-gray-400">
         {review.description}
       </p>
+
+      <Separator className="mb-4" />
     </div>
   )
 }

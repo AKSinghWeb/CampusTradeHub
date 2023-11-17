@@ -10,6 +10,7 @@ import { authApiService } from '@/services/apiService'
 import { Loader2 } from 'lucide-react'
 import { login } from '@/utils/authFunctions'
 import { useAuth } from '@/context/UserAuthContext'
+import { Link } from 'react-router-dom'
 
 const SignupForm = () => {
   const inputRef = useRef(null)
@@ -167,7 +168,12 @@ const SignupForm = () => {
                   Accept terms and conditions
                 </label>
                 <p className="text-sm text-muted-foreground">
-                  You agree to our Terms of Service and Privacy Policy.
+                  You agree to our{' '}
+                  <Link to={'/terms'}>
+                    <span className="text-primary">
+                      Terms of Service and Privacy Policy.
+                    </span>
+                  </Link>
                 </p>
               </div>
             </div>

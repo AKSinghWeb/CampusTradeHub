@@ -14,7 +14,7 @@ export function LoginDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="" variant="default">
+        <Button className="h-8 rounded-md px-2 text-xs" variant="default">
           Login/Signup
         </Button>
       </DialogTrigger>

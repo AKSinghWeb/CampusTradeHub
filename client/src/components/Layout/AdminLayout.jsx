@@ -12,6 +12,7 @@ import AllProductsPage from '@/pages/AdminAllProducts'
 import AllUsersPage from '@/pages/AdminAllUsers'
 import UserProfile from '@/pages/UserProfile'
 import AllReportsPage from '@/pages/AdminAllReports'
+import AllFeedbacksPage from '@/pages/AdminFeedbacks'
 
 const AdminLayout = () => {
   return (
@@ -27,6 +28,7 @@ const AdminLayout = () => {
           <Route path="/admin/products" element={<AllProductsPage />} />
           <Route path="/admin/users" element={<AllUsersPage />} />
           <Route path="/admin/reports" element={<AllReportsPage />} />
+          <Route path="/admin/feedbacks" element={<AllFeedbacksPage />} />
           <Route path="/user-profile/:userId" element={<UserProfile />} />
         </Routes>
       </div>

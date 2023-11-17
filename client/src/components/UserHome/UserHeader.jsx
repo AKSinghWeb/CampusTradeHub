@@ -172,6 +172,16 @@ const Header = () => {
                       </Link>
                     </div>
                   )}
+                  {!state.isLoggedIn && (
+                    <div>
+                      <Link
+                        to={'/about'}
+                        className="block px-2 py-1 font-semibold text-lg"
+                      >
+                        <SheetClose>About Us</SheetClose>
+                      </Link>
+                    </div>
+                  )}
                 </nav>
               </SheetContent>
             </Sheet>
@@ -310,6 +320,22 @@ const Header = () => {
                       className="text-sm font-medium transition-colors "
                     >
                       Sales Inbox
+                    </Link>
+                  </Button>
+                </div>
+              )}
+              {!state.isLoggedIn && (
+                <div>
+                  <Button
+                    asChild
+                    variant="ghost"
+                    className="text-md  hover:bg-gray-100 dark:hover:bg-gray-800"
+                  >
+                    <Link
+                      to={'/about'}
+                      className="text-sm font-medium transition-colors "
+                    >
+                      About Us
                     </Link>
                   </Button>
                 </div>

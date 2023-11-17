@@ -94,7 +94,9 @@ userRouter.put(
 
       if (req.file) {
         const { file } = req
-        const fileName = `profile-pictures/profilePicture-${user._id}`
+        const fileName = `profile-pictures/profilePicture-${
+          user._id
+        }-${Date.now()}`
         const fileUpload = bucket.file(fileName)
 
         const blobStream = fileUpload.createWriteStream({
@@ -110,6 +112,14 @@ userRouter.put(
         blobStream.on('finish', async () => {
           // The public URL can be used to directly access the file.
           const url = fileUpload.publicUrl()
+          const oldProfilePicture = user.profilePicture
+
+          if (oldProfilePicture) {
+            const filePath = `profile-pictures/${
+              oldProfilePicture.split('%2F')[1]
+            }`
+            await bucket.file(filePath).delete()
+          }
 
           user.profilePicture = url
           const updatedUser = await user.save() // Save the product with the image URL
@@ -215,6 +225,34 @@ userRouter.put('/password', userAuthMiddleware, async (req, res) => {
     res.status(200).json(updatedUser)
   } catch (err) {
     console.error('Error updating password:', err.message)
+    res.status(500).json({ error: 'Internal Server Error' })
+  }
+})
+
+// Delete Profile Picture (User)
+userRouter.delete('/profile-picture', userAuthMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id)
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found.' })
+    }
+
+    const oldProfilePicture = user.profilePicture
+
+    if (!oldProfilePicture) {
+      return res.status(400).json({ error: 'No profile picture to delete.' })
+    }
+
+    const filePath = `profile-pictures/${oldProfilePicture.split('%2F')[1]}`
+    await bucket.file(filePath).delete()
+
+    user.profilePicture = ''
+    const updatedUser = await user.save()
+
+    res.status(200).json(updatedUser)
+  } catch (err) {
+    console.error('Error deleting profile picture:', err.message)
     res.status(500).json({ error: 'Internal Server Error' })
   }
 })

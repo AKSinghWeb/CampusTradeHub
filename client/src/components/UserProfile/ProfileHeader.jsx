@@ -9,7 +9,7 @@ import { Loader2, Save } from 'lucide-react'
 
 const ProfileHeader = () => {
   useAuthorization()
-  const { state } = useAuth()
+  const { state, dispatch } = useAuth()
   const [selectedPicture, setSelectedPicture] = useState(
     state.user && state.user.profilePicture ? state.user.profilePicture : null
   )
@@ -49,12 +49,11 @@ const ProfileHeader = () => {
         'Profile Picture Updated successfully!',
         formData
       )
-      console.log(response)
+      setSelectedPicture(response.profilePicture)
+      dispatch({ type: 'UPDATE', payload: { ...response } })
     } catch (error) {
       console.log(error)
     }
-
-    console.log('Image submitted', selectedPicture)
   }
 
   return (
@@ -96,7 +95,7 @@ const ProfileHeader = () => {
 
           <Button
             className="flex bg-blue-600 hover:bg-blue-700 hover:text-white text-white rounded"
-            disabled={!(selectedPicture instanceof Blob)}
+            disabled={!(selectedPicture instanceof Blob) || loading}
             onClick={handleImageSubmit}
           >
             {loading ? (

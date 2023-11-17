@@ -232,7 +232,7 @@ const EditProductForm = () => {
                 )}
               </div>
             </div>
-            <div className="flex-1">
+            <div className="">
               <Label htmlFor="description">Description</Label>
               <div className="relative flex items-center">
                 <Textarea
@@ -254,29 +254,7 @@ const EditProductForm = () => {
                 </p>
               )}
             </div>
-            <div className="flex-1">
-              <Label htmlFor="description">Description</Label>
-              <div className="relative flex items-center">
-                <Textarea
-                  id="description"
-                  name="description"
-                  value={product.description}
-                  onChange={handleInputChange}
-                  placeholder="Enter the product description"
-                  rows="3"
-                  className="p-2 pr-6"
-                />
-                <span className="absolute right-1 top-2">
-                  <FileText size={18} className="text-gray-400" />
-                </span>
-              </div>
-              {productErrors.description && (
-                <p className="text-red-500 ml-2 font-semibold text-sm">
-                  {productErrors.description}
-                </p>
-              )}
-            </div>
-            <div className="flex-1">
+            <div className="">
               <Label htmlFor="category">Category</Label>
               <div className="relative flex items-center">
                 <Select

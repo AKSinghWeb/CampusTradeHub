@@ -82,6 +82,14 @@ const Header = () => {
                       <SheetClose>Reports</SheetClose>
                     </Link>
                   </div>
+                  <div>
+                    <Link
+                      to={'/admin/feedbacks'}
+                      className="block px-2 py-1 font-semibold text-lg"
+                    >
+                      <SheetClose>User Feedbacks</SheetClose>
+                    </Link>
+                  </div>
                 </nav>
               </SheetContent>
             </Sheet>
@@ -153,6 +161,20 @@ const Header = () => {
                     className="text-sm font-medium transition-colors "
                   >
                     Reports
+                  </Link>
+                </Button>
+              </div>
+              <div>
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="text-md  hover:bg-gray-100 dark:hover:bg-gray-800"
+                >
+                  <Link
+                    to={'/admin/feedbacks'}
+                    className="text-sm font-medium transition-colors "
+                  >
+                    User Feedbacks
                   </Link>
                 </Button>
               </div>

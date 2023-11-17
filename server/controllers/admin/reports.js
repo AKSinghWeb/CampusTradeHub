@@ -14,7 +14,7 @@ adminReportsRouter.get('/', adminAuthMiddleware, async (req, res) => {
       .populate({ path: 'reportedUser', select: 'name username email' })
       .populate({ path: 'reportedProduct', select: 'title' })
       .sort({
-        updatedAt: -1,
+        timestamp: -1,
       })
 
     if (!reports) {

@@ -12,7 +12,7 @@ import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
 
 const UserInfo = () => {
-  let { state } = useAuth()
+  let { state, dispatch } = useAuth()
 
   const [userInfo, setUserInfo] = useState({
     name: (state.user && state.user.name) || '',
@@ -83,7 +83,7 @@ const UserInfo = () => {
         'User Info Updated successfully!',
         userInfo
       )
-      console.log(response)
+      dispatch({ type: 'UPDATE', payload: response })
     } catch (error) {
       console.log(error)
     }

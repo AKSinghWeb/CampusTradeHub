@@ -129,10 +129,12 @@ adminProductsRouter.delete(
         return res.status(404).json({ error: 'Product not found' })
       }
 
+      if (product.images) {
+        const filePath = `products-images/${product.images.split('%2F')[1]}`
+        console.log(filePath)
+        await bucket.file(filePath).delete()
+      }
       await Product.findByIdAndDelete(productId)
-
-      const filePath = `products-images/${product.images.split('%2F')[1]}`
-      await bucket.file(filePath).delete()
       res.status(200).json({ message: 'Product deleted successfully' })
     } catch (error) {
       return res.status(500).json({ message: 'Internal Server Error' })

@@ -19,8 +19,8 @@ const Footer = () => {
             Discover, Connect and Trade used goods.
           </p>
         </div>
-        <div className="flex items-center space-x-4 mt-4 md:mt-0 mx-auto md:mx-0">
-          <div className="flex items-center space-x-4">
+        <div className="flex flex-col items-center mt-8 md:mt-0 mx-auto md:mx-0">
+          <div className="flex items-center mb-4 space-x-4">
             <a
               href="https://twitter.com/yourtwitter"
               target="_blank"
@@ -43,9 +43,15 @@ const Footer = () => {
               <Facebook className="h-8 w-8 hover:text-primary" />
             </a>
           </div>
+          <div>
+            Designed with <span className="text-red-500">❤️</span> by{' '}
+            <Link to={'/about'} className="font-semibold underline">
+              CampusTradeHub Team
+            </Link>
+          </div>
         </div>
         <div className="flex flex-col mt-8 md:mt-0 mx-auto md:mx-0">
-          <p className="text-gray-400 mb-2">
+          <p className="text-gray-400 mb-4">
             &copy; {2023} CampusTradeHub. All rights reserved.
           </p>
           <nav className="flex items-center space-x-4 md:mt-0 mx-auto md:mx-0">

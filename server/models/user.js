@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema(
     location: { type: String, default: '' },
     profilePicture: {
       type: String,
-      default: 'https://avatar.iran.liara.run/public/79',
+      default: '',
     },
     averageRating: { type: Number, default: 0 },
     passwordHash: { type: String, required: true },

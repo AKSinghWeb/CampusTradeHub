@@ -16,6 +16,9 @@ import EditProductForm from '@/pages/EditProduct'
 import UserProfile from '@/pages/UserProfile'
 import MyUserProfile from '../../pages/MyUserProfile'
 import UpdateSuccess from '../updateSuccess'
+import About from '@/pages/About'
+import ContactUs from '@/pages/ContactUs'
+import TermsAndPrivacy from '@/pages/TermsAndPrivacy'
 
 const UserLayout = () => {
   return (
@@ -48,6 +51,9 @@ const UserLayout = () => {
           <Route path="/edit-product-success" element={<UpdateSuccess />} />
 
           <Route path="/sales-inbox" element={<SalesInbox />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<ContactUs />} />
+          <Route path="/terms" element={<TermsAndPrivacy />} />
         </Routes>
         <Footer />
       </div>

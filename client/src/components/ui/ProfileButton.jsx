@@ -36,7 +36,7 @@ const ProfileButton = () => {
                 <UserCircle />
               </AvatarFallback>
             </Avatar>
-            <div className="flex flex-col w-full items-start justify-center ml-2">
+            <div className="max-md:hidden flex flex-col w-full items-start justify-center ml-2">
               <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">
                 {state.user.name}
               </span>
@@ -54,19 +54,23 @@ const ProfileButton = () => {
               My Profile
             </DropdownMenuItem>
           </Link>
-          <Link to="/user/my-postings">
-            <DropdownMenuItem className="cursor-pointer">
-              My Postings
-            </DropdownMenuItem>
-          </Link>
+          {state.user && state.user.role === 'user' ? (
+            <div>
+              <Link to="/user/my-postings">
+                <DropdownMenuItem className="cursor-pointer">
+                  My Postings
+                </DropdownMenuItem>
+              </Link>
+              <Link to="/user/reviewsAndRatings">
+                <DropdownMenuItem className="cursor-pointer">
+                  Reviews & Ratings
+                </DropdownMenuItem>
+              </Link>{' '}
+            </div>
+          ) : null}
           <Link to="/user/settings">
             <DropdownMenuItem className="cursor-pointer">
               Settings
-            </DropdownMenuItem>
-          </Link>
-          <Link to="/user/reviewsAndRatings">
-            <DropdownMenuItem className="cursor-pointer">
-              Reviews & Ratings
             </DropdownMenuItem>
           </Link>
           <DropdownMenuSeparator />

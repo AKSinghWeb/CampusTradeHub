@@ -24,10 +24,18 @@ export const AuthProvider = ({ children }) => {
       case 'LOGOUT':
         // Clear user information from local storage
         localStorage.removeItem('user')
+        localStorage.removeItem('authToken')
         return {
           ...state,
           isLoggedIn: false,
           user: null,
+        }
+      case 'UPDATE':
+        // Update user information in local storage
+        localStorage.setItem('user', JSON.stringify(action.payload))
+        return {
+          ...state,
+          user: action.payload,
         }
       default:
         return state
@@ -42,7 +50,6 @@ export const AuthProvider = ({ children }) => {
     ...(storedUser && { isLoggedIn: true, user: storedUser }),
   })
 
-
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
@@ -54,10 +61,10 @@ export const AuthProvider = ({ children }) => {
           dispatch({ type: 'LOGIN', payload: { ...userProfile } })
         }
       } catch (error) {
-        if (error.toString().includes('Invalid token')) {
+        if (error.toString().includes('Unauthorized')) {
           dispatch({ type: 'LOGOUT' })
         }
-        
+
         console.error('Error fetching user profile:', error)
       }
     }

@@ -17,6 +17,8 @@ const reportRouter = require('./controllers/reports')
 const statsRouter = require('./controllers/admin/stats')
 const adminUsersRouter = require('./controllers/admin/users')
 const adminReportsRouter = require('./controllers/admin/reports')
+const adminFeedbackRouter = require('./controllers/admin/feedback')
+const feedbackRouter = require('./controllers/feedback')
 
 const app = express()
 
@@ -33,14 +35,16 @@ app.use(helmet())
 
 app.use('/api/login', loginRouter)
 app.use('/api/users', userRouter)
+app.use('/api/reviews', reviewRouter)
+app.use('/api/reports', reportRouter)
 app.use('/api/products', productRouter)
+app.use('/api/products/offers', offerRouter)
+app.use('/api/feedbacks', feedbackRouter)
 app.use('/api/admin/products', adminProductsRouter)
 app.use('/api/admin/stats', statsRouter)
 app.use('/api/admin/users', adminUsersRouter)
 app.use('/api/admin/reports', adminReportsRouter)
-app.use('/api/products/offers', offerRouter)
-app.use('/api/reviews', reviewRouter)
-app.use('/api/reports', reportRouter)
+app.use('/api/admin/feedbacks', adminFeedbackRouter)
 
 app.get('*', (req, res) => {
   res.status(404).json({ error: 'Not Found' })

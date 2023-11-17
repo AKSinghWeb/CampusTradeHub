@@ -156,7 +156,9 @@ productRouter.post(
 
       if (req.file) {
         const { file } = req
-        const fileName = `products-images/productImage-${newProduct._id}`
+        const fileName = `products-images/productImage-${
+          newProduct._id
+        }-${Date.now()}`
         const fileUpload = bucket.file(fileName)
 
         const blobStream = fileUpload.createWriteStream({
@@ -185,6 +187,8 @@ productRouter.post(
         res.status(200).json(product)
       }
     } catch (error) {
+      console.log(error)
+
       return res.status(500).json({ message: 'Internal Server Error' })
     }
 
@@ -276,7 +280,9 @@ productRouter.put(
 
       if (req.file) {
         const { file } = req
-        const fileName = `products-images/productImage-${product._id}`
+        const fileName = `products-images/productImage-${
+          product._id
+        }-${Date.now()}`
         const fileUpload = bucket.file(fileName)
 
         const blobStream = fileUpload.createWriteStream({
@@ -292,9 +298,18 @@ productRouter.put(
         blobStream.on('finish', async () => {
           // The public URL can be used to directly access the file.
           const publicUrl = fileUpload.publicUrl()
+          const oldProductPicture = product.images
           product.images = publicUrl // Save the image URL in the product document
           product.status = 'pending'
           await product.save() // Save the product with the image URL
+
+          if (oldProductPicture) {
+            const filePath = `products-images/${
+              oldProductPicture.split('%2F')[1]
+            }`
+            await bucket.file(filePath).delete()
+          }
+
           await Offer.deleteMany({ productId }) // Delete all offers for the product
           // delte the product from user products array
           await User.findByIdAndUpdate(req.user._id, {
@@ -355,6 +370,7 @@ productRouter.delete('/:productId', userAuthMiddleware, async (req, res) => {
     }
     return res.status(401).json({ error: 'Forbidden.' })
   } catch (error) {
+    console.log(error)
     return res.status(500).json({ message: 'Internal Server Error' })
   }
 })
