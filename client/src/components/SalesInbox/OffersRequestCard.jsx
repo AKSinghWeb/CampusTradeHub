@@ -1,4 +1,4 @@
-import { CheckCircle2, XCircle } from 'lucide-react'
+import { CheckCircle2, Loader2, XCircle } from 'lucide-react'
 import { Button } from '../ui/button'
 
 import {
@@ -10,8 +10,36 @@ import {
 } from '@/components/ui/card'
 import { OfferAcceptDialog } from '../Offer/OfferAcceptDialog'
 import { ViewContactPopover } from '../Offer/ViewContactPopover'
+import { offersApiService } from '@/services/apiService'
+import useApiCall from '@/hooks/useApiCall'
 
 export function OffersRequestsCard({ offer }) {
+  const [createAcceptOfferApiCall, loading] = useApiCall(
+    offersApiService.acceptOffer
+  )
+
+  const handleReject = async () => {
+    try {
+      const response = await createAcceptOfferApiCall(
+        'Offer Rejected',
+        offer._id,
+        {
+          response: 'rejected',
+          contactInformation: {
+            mobileNumber: '',
+            alternateMobileNumber: '',
+            email: '',
+          },
+        }
+      )
+      if (response.success) {
+        window.location.reload()
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error)
+    }
+  }
+
   return (
     <Card className="bg-gray-100 lg:w-[40%] w-[90%] min-h-[250px] my-4 lg:m-[1%] dark:bg-slate-800 flex flex-col justify-between">
       <CardHeader className="px-8 text-left">
@@ -64,14 +92,27 @@ export function OffersRequestsCard({ offer }) {
                   email={offer.email}
                 />
               </>
+            ) : offer.status === 'rejected' ? (
+              <Button
+                disabled={true}
+                className="w-full bg-red-600 hover:bg-red-800"
+              >
+                <XCircle size={18} className="inline-block mr-2" />
+                Rejected
+              </Button>
             ) : (
               <>
                 <OfferAcceptDialog offerId={offer._id} />
                 <Button
                   variant="destructive"
                   className="w-full dark:bg-red-600 hover:bg-red-800 dark:hover:bg-red-800"
+                  onClick={handleReject}
                 >
-                  <XCircle size={18} className="inline-block mr-2" />
+                  {loading ? (
+                    <Loader2 className="animate-spin mr-2" />
+                  ) : (
+                    <XCircle size={18} className="inline-block mr-2" />
+                  )}
                   Reject
                 </Button>
               </>

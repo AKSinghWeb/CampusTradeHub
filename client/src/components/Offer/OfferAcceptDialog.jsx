@@ -10,11 +10,11 @@ import {
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { CheckCircle2, Loader2 } from 'lucide-react'
+import { CheckCircle, CheckCircle2, Loader2 } from 'lucide-react'
 import { useState } from 'react'
 import { offersApiService } from '@/services/apiService'
 import useApiCall from '@/hooks/useApiCall'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 export function OfferAcceptDialog({ offerId }) {
   const [formData, setFormData] = useState({
@@ -101,21 +101,20 @@ export function OfferAcceptDialog({ offerId }) {
             {' '}
             <Loader2 className="animate-spin mr-2" /> <span>Please wait</span>
           </>
+        ) : success ? (
+          <>
+            <CheckCircle size={64} className="text-green-500 mx-auto" />
+            <h2 className="text-2xl font-semibold  text-center mt-4 mb-6">
+              Your have accepted the buyers request!
+            </h2>
+            <p className="text-muted-foreground text-center mb-6">
+              Now you can view the buyers contact information.
+            </p>
+            <Link className="flex justify-center" to="/">
+              <Button>Go to Home Page</Button>
+            </Link>
+          </>
         ) : (
-          // : success ? (
-          //   <>
-          //     <CheckCircle size={64} className="text-green-500 mx-auto" />
-          //     <h2 className="text-2xl font-semibold  text-center mt-4 mb-6">
-          //       Your have accepted the buyers request!
-          //     </h2>
-          //     <p className="text-muted-foreground text-center mb-6">
-          //       Now you can view the buyers contact information of the user.
-          //     </p>
-          //     <Link className="flex justify-center" to="/">
-          //       <Button>Go to Home Page</Button>
-          //     </Link>
-          //   </>
-          // )
           <>
             <DialogHeader>
               <DialogTitle>

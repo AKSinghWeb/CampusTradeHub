@@ -125,9 +125,7 @@ productRouter.get('/count/:limit', async (req, res) => {
       return res.status(404).json({ error: 'No products found' })
     }
 
-    setTimeout(() => {
-      res.status(200).json(products)
-    }, 5000)
+    res.status(200).json(products)
   } catch (error) {
     return res.status(500).json({ message: 'Internal Server Error' })
   }
@@ -359,8 +357,11 @@ productRouter.delete('/:productId', userAuthMiddleware, async (req, res) => {
 
       await Offer.deleteMany({ productId })
 
-      const filePath = `products-images/${product.images.split('%2F')[1]}`
-      await bucket.file(filePath).delete()
+      if (product.images) {
+        const filePath = `products-images/${product.images.split('%2F')[1]}`
+        console.log(filePath)
+        await bucket.file(filePath).delete()
+      }
 
       return res.status(200).json({ message: 'Product deleted successfully' })
     }
@@ -369,8 +370,11 @@ productRouter.delete('/:productId', userAuthMiddleware, async (req, res) => {
 
       await Offer.deleteMany({ productId })
 
-      const filePath = `products-images/${product.images.split('%2F')[1]}`
-      await bucket.file(filePath).delete()
+      if (product.images) {
+        const filePath = `products-images/${product.images.split('%2F')[1]}`
+        console.log(filePath)
+        await bucket.file(filePath).delete()
+      }
 
       return res.status(200).json({ message: 'Product deleted successfully' })
     }

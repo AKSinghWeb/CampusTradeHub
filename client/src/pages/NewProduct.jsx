@@ -149,6 +149,7 @@ const ProductForm = () => {
         getAuthToken(),
         postData
       )
+      if (!response) return
       navigate('/new-product-success')
       console.log(response)
     } catch (error) {

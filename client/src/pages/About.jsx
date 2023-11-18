@@ -1,7 +1,7 @@
 import { Globe, Mail, Linkedin, Instagram } from 'lucide-react'
 
 const TeamMember = ({ name, role, image }) => (
-  <div className="p-4 lg:w-1/2">
+  <div className="p-4 m-4 border rounded-md dark:bg-slate-900 shadow-md lg:w-[45%]">
     <div className="h-full flex sm:flex-row flex-col items-center sm:justify-start justify-center text-center sm:text-left">
       <img
         alt="team"
@@ -46,7 +46,7 @@ const TeamSection = () => (
         difference.
       </p>
     </div>
-    <div className="flex flex-col md:flex-row md:flex-wrap max-md:gap-4 m-4">
+    <div className="flex flex-col justify-center lg:flex-row sm:flex-wrap max-md:gap-4 ">
       <TeamMember
         name="Anupam Kumar Singh"
         role="Project Lead and Backend Developer"

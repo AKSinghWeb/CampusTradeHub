@@ -3,15 +3,23 @@ import { useEffect, useState } from 'react'
 import ProductCard from '../ProductCard'
 import { Link } from 'react-router-dom'
 import { productApiService } from '@/services/apiService'
+import { Loader2 } from 'lucide-react'
 
 const ProductCardsContainer = () => {
   const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await productApiService.getProductslatest(12)
-      const data = response.data
-      setProducts(data)
+      try {
+        const response = await productApiService.getProductslatest(12)
+        const data = response.data
+        setProducts(data)
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      } finally {
+        setLoading(false)
+      }
     }
 
     fetchData()
@@ -26,15 +34,32 @@ const ProductCardsContainer = () => {
             Postings
           </span>
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-4">
-          {products.map((product) => (
-            <div data-aos="fade-up" key={product.id}>
-              <Link to={`/product/${product.id}`}>
-                <ProductCard product={product} />
-              </Link>
-            </div>
-          ))}
-        </div>
+
+        {loading ? (
+          <div className="flex flex-col p-16 items-center justify-center h-full">
+            <Loader2 className="animate-spin h-20 w-20 text-blue-500" />
+            <p className="mt-4 text-lg text-gray-600 dark:text-gray-400">
+              Please Wait while we load the products
+            </p>
+          </div>
+        ) : products.length === 0 ? (
+          // Show message when no products are available
+          <div className="text-center">
+            <p className="text-xl mt-8 md:mt-12 lg:mt-16 font-semibold text-gray-800 dark:text-gray-200">
+              No products available.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-4">
+            {products.map((product) => (
+              <div data-aos="fade-up" key={product.id}>
+                <Link to={`/product/${product.id}`}>
+                  <ProductCard product={product} />
+                </Link>
+              </div>
+            ))}
+          </div>
+        )}
         <div className="mt-8 flex justify-center">
           <Link to="/products/all">
             <button
