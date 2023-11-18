@@ -125,7 +125,9 @@ productRouter.get('/count/:limit', async (req, res) => {
       return res.status(404).json({ error: 'No products found' })
     }
 
-    res.status(200).json(products)
+    setTimeout(() => {
+      res.status(200).json(products)
+    }, 5000)
   } catch (error) {
     return res.status(500).json({ message: 'Internal Server Error' })
   }
@@ -138,10 +140,14 @@ productRouter.post(
   async (req, res) => {
     const { title, description, price, category, location } = req.body
 
-    if (!title || !description || !price || !category || !location) {
+    if (!title || !description || !category || !location) {
       return res
         .status(400)
         .json({ error: 'Missing required fields for product data' })
+    }
+
+    if (category !== 'Donations' && !price) {
+      return res.status(400).json({ error: 'Missing price for product' })
     }
 
     try {
