@@ -18,9 +18,9 @@ export function LoginDialog() {
           Login/Signup
         </Button>
       </DialogTrigger>
-      <DialogContent className=" max-md:top-[38%] max-w-[450px]">
+      <DialogContent className=" max-md: max-w-[450px]">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="max-md:hidden">
             <div className="flex justify-center items-center">
               <img src={logo} alt="Logo" className="h-10 mb-1 w-10 mr-2" />
               <span className="text-2xl">CampusTradeHub</span>

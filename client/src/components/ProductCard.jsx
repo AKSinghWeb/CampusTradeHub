@@ -42,7 +42,7 @@ const ProductCard = ({ product, user = false }) => {
         alt={product.name}
         className="w-full h-60 object-cover"
       />
-      <div className="p-4 flex flex-col h-44 justify-between">
+      <div className="p-4 flex flex-col h-50 justify-between">
         <div>
           <div className="flex items-center mb-3">
             {getCategoryIcon(product.category)}

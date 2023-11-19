@@ -165,16 +165,20 @@ const SignupForm = () => {
                   htmlFor="terms1"
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
-                  Accept terms and conditions
-                </label>
-                <p className="text-sm text-muted-foreground">
-                  You agree to our{' '}
-                  <Link to={'/terms'}>
-                    <span className="text-primary">
-                      Terms of Service and Privacy Policy.
-                    </span>
+                  Accept{' '}
+                  <Link
+                    onClick={() => {
+                      const escKeyEvent = new KeyboardEvent('keydown', {
+                        key: 'Escape',
+                        keyCode: 27,
+                      })
+                      document.dispatchEvent(escKeyEvent)
+                    }}
+                    to={'/terms'}
+                  >
+                    <span className="text-primary">Terms and Conditions</span>
                   </Link>
-                </p>
+                </label>
               </div>
             </div>
             {formErrors.terms && (

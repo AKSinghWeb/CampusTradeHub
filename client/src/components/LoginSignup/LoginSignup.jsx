@@ -4,7 +4,7 @@ import LoginForm from './LoginForm'
 
 export function LoginSignup() {
   return (
-    <Tabs defaultValue="login" className="w-[400px]">
+    <Tabs defaultValue="login" className="">
       <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="login">
           <span id="loginBtn">Login</span>
