@@ -5,9 +5,9 @@ import axios from 'axios'
 // const apiUrl = 'http://172.17.22.212:3000'
 // const apiUrl = 'http://192.168.1.41:3000'
 // const apiUrl = 'http://192.168.1.20:3000'
-const apiUrl = 'http://localhost:3000'
+// const apiUrl = 'http://localhost:3000'
 // const apiUrl = 'https://cth-api-550z.onrender.com'
-// const apiUrl = 'https://cth.up.railway.app'
+const apiUrl = 'https://cth.up.railway.app'
 
 export const userApiService = {
   getMyProfile: async (token) => {
